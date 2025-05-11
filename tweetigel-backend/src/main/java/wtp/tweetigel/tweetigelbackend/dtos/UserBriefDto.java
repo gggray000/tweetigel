@@ -1,4 +1,8 @@
 package wtp.tweetigel.tweetigelbackend.dtos;
 
-public record UserBriefDto() {
+import java.time.Instant;
+
+public record UserBriefDto(String id,
+                           String username,
+                           Instant registeredAt) {
 }

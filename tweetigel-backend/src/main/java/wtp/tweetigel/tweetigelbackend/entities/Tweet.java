@@ -1,9 +1,6 @@
 package wtp.tweetigel.tweetigelbackend.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 
 import java.time.Instant;
@@ -17,7 +14,8 @@ import static org.hibernate.annotations.OnDeleteAction.CASCADE;
 public class Tweet {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String content;
     @ManyToOne
     @OnDelete(action=CASCADE)
@@ -28,7 +26,6 @@ public class Tweet {
 
     public Tweet(String content, User author) {
         this.timestamp = Instant.now();
-        this.id = author.getId() + UUID.fromString(timestamp.toString());
         this.content = content;
         this.author = author;
         this.likedList = new ArrayList<>();
@@ -38,12 +35,8 @@ public class Tweet {
 
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getContent() {

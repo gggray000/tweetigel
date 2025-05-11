@@ -1,6 +1,8 @@
 package wtp.tweetigel.tweetigelbackend.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.lang.NonNullApi;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -8,14 +10,16 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Table(name = "\"user\"") //From ChatGpt. Test case could not run without this, because "user" is a reserved keyword in H2.
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String username;
     private String password;
     private Instant registeredAt;
-    @OneToMany(mappedBy = "tweets", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tweet> tweets;
     @OneToMany
     private List<User> followed;
@@ -23,7 +27,6 @@ public class User {
     private List<User> followers;
 
     public User(String username, String password) {
-        this.id = UUID.randomUUID().toString();
         this.username = username;
         this.password = password;
         this.registeredAt = Instant.now();
@@ -38,10 +41,6 @@ public class User {
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getUsername() {

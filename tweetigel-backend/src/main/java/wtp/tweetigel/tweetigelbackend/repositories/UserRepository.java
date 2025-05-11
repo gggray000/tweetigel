@@ -1,14 +1,16 @@
 package wtp.tweetigel.tweetigelbackend.repositories;
 
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import wtp.tweetigel.tweetigelbackend.entities.User;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface UserRepository {
+public interface UserRepository extends CrudRepository<User, UUID> {
     Optional<User> findByUsername(String username);
-    Boolean existsByUsername(String username);
-    Optional<User> findById(String id);
-    Boolean existsById(String id);
+    boolean existsByUsername(String username);
+    Optional<User> findById(UUID id);
+    boolean existsById(UUID id);
 }
