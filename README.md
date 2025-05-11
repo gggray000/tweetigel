@@ -1,3 +1,4 @@
 # ics-wtp-tweetigel
 
-![Tweetigel Logo](tweetigel_logo.png)
+
+<img src="tweetigel_logo.png" alt="Tweetigel Logo" width="100"/>
