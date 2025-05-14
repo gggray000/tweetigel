@@ -22,4 +22,7 @@ public class ClientErrors {
         return log(new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "username or password can't be blank."));
     }
 
+    public static ResponseStatusException invalidCredentials() {
+        return log(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Credentials"));
+    }
 }
