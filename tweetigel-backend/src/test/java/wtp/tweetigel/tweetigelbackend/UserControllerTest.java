@@ -8,6 +8,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 import wtp.tweetigel.tweetigelbackend.controllers.UserController;
+import wtp.tweetigel.tweetigelbackend.dtos.LoggedInStatus;
 import wtp.tweetigel.tweetigelbackend.dtos.UserBriefDto;
 import wtp.tweetigel.tweetigelbackend.dtos.UserCreateDto;
 import wtp.tweetigel.tweetigelbackend.dtos.UserLoginDto;
@@ -60,5 +61,6 @@ public class UserControllerTest extends UserControllerTestBase{
         );
         UserLoginDto testUserLoginDto = new UserLoginDto("testUser", "test123");
         assertTrue(userService.isCredentialValid(testUserLoginDto));
+        assertEquals(LoggedInStatus.LOGGED_IN, controller.login(testUser(), testUserLoginDto).loggedInStatus());
     }
 }

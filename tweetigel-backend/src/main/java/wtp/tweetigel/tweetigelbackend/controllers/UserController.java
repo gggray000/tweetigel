@@ -6,9 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wtp.tweetigel.tweetigelbackend.dtos.UserBriefDto;
-import wtp.tweetigel.tweetigelbackend.dtos.UserCreateDto;
-import wtp.tweetigel.tweetigelbackend.dtos.UserLoginDto;
+import wtp.tweetigel.tweetigelbackend.dtos.*;
 import wtp.tweetigel.tweetigelbackend.services.UserService;
 import wtp.tweetigel.tweetigelbackend.exceptions.ClientErrors;
 
@@ -39,14 +37,32 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<String> login(HttpServletRequest request,
-                                        @RequestBody UserLoginDto userLoginDto){
+    public UserLoggedinDto login(HttpServletRequest request,
+                                 @RequestBody UserLoginDto userLoginDto){
         if(userService.isCredentialValid(userLoginDto)){
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body("Login successfully as: " + userLoginDto.username());
+            return new UserLoggedinDto(userLoginDto.username(), LoggedInStatus.LOGGED_IN);
         } else {
             throw ClientErrors.invalidCredentials();
         }
     }
 }
+
+//    @PostMapping(
+//            value="/user/login",
+//            consumes = MediaType.APPLICATION_JSON_VALUE,
+//            produces = MediaType.APPLICATION_JSON_VALUE
+//    )
+//    public ResponseEntity<String> login(HttpServletRequest request,
+//                                        @RequestBody UserLoginDto userLoginDto){
+//        if(userService.isCredentialValid(userLoginDto)){
+//            // TODO: to be covered by test
+//            return ResponseEntity
+//                    .status(HttpStatus.OK)
+//                    .body("Login successfully as: " + userLoginDto.username());
+//        } else {
+//            throw ClientErrors.invalidCredentials();
+//        }
+//    }
+//}
+
+
