@@ -23,6 +23,23 @@ public class ClientErrors {
     }
 
     public static ResponseStatusException invalidCredentials() {
-        return log(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Credentials"));
+        return log(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials."));
     }
+
+    public static ResponseStatusException noRepeatedFollow() {
+        return log(new ResponseStatusException(HttpStatus.CONFLICT, "Already followed before."));
+    }
+
+    public static ResponseStatusException invalidFollowRequest() {
+        return log(new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Invalid follow request."));
+    }
+
+    public static ResponseStatusException invalidUnfollowRequest() {
+        return log(new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Invalid unfollow request."));
+    }
+
+    public static ResponseStatusException userNotFound() {
+        return log(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+    }
+
 }

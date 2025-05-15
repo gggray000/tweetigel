@@ -2,15 +2,14 @@ package wtp.tweetigel.tweetigelbackend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import wtp.tweetigel.tweetigelbackend.dtos.UserBriefDto;
-import wtp.tweetigel.tweetigelbackend.dtos.UserCreateDto;
-import wtp.tweetigel.tweetigelbackend.dtos.UserDto;
-import wtp.tweetigel.tweetigelbackend.dtos.UserLoginDto;
+import wtp.tweetigel.tweetigelbackend.dtos.*;
 import wtp.tweetigel.tweetigelbackend.entities.User;
 import wtp.tweetigel.tweetigelbackend.exceptions.ClientErrors;
 import wtp.tweetigel.tweetigelbackend.repositories.TweetRepository;
 import wtp.tweetigel.tweetigelbackend.repositories.UserRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,12 +19,12 @@ public class UserService {
     private TweetRepository tweetRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, TweetRepository tweetRepository){
+    public UserService(UserRepository userRepository, TweetRepository tweetRepository) {
         this.userRepository = userRepository;
         this.tweetRepository = tweetRepository;
     }
 
-    private User toEntity(UserCreateDto userCreateDto){
+    private User toEntity(UserCreateDto userCreateDto) {
         return new User(userCreateDto.username(), userCreateDto.password());
     }
 
@@ -37,11 +36,11 @@ public class UserService {
         );
     }
 
-    public UserBriefDto register(UserCreateDto userCreateDto){
-        if(userRepository.existsByUsername(userCreateDto.username())){
+    public UserBriefDto register(UserCreateDto userCreateDto) {
+        if (userRepository.existsByUsername(userCreateDto.username())) {
             throw ClientErrors.sameUsername(userCreateDto.username());
         }
-        if(userCreateDto.username().isBlank() || userCreateDto.password().isBlank()){
+        if (userCreateDto.username().isBlank() || userCreateDto.password().isBlank()) {
             throw ClientErrors.notBlankAllowed();
         }
         User newUser = toEntity(userCreateDto);
@@ -49,15 +48,69 @@ public class UserService {
         return toBriefDto(newUser);
     }
 
-    public boolean isCredentialValid(UserLoginDto userLoginDto){
-        if(!userRepository.existsByUsername(userLoginDto.username())){
+    public boolean isCredentialValid(UserLoginDto userLoginDto) {
+        if (!userRepository.existsByUsername(userLoginDto.username())) {
             return false;
         }
         Optional<User> tobeVerified = userRepository.findByUsername(userLoginDto.username());
-        if(tobeVerified.isPresent()){
+        if (tobeVerified.isPresent()) {
             User user = tobeVerified.get();
             return user.getPassword().equals(userLoginDto.password());
         }
         return false;
+    }
+
+    public void follow(FollowDto followDto) {
+        Optional<User> followerOp = userRepository.findByUsername(followDto.follower());
+        Optional<User> toBeFollowedOp = userRepository.findByUsername(followDto.followed());
+        if (followerOp.isPresent() && toBeFollowedOp.isPresent()) {
+            User follower = followerOp.get();
+            User toBeFollowed = toBeFollowedOp.get();
+            if (follower.getFollowed().contains(toBeFollowed) || toBeFollowed.getFollowers().contains(follower)) {
+                throw ClientErrors.noRepeatedFollow();
+            }
+            follower.getFollowed().add(toBeFollowed);
+            toBeFollowed.getFollowers().add(follower);
+        } else {
+            throw ClientErrors.invalidFollowRequest();
+        }
+    }
+
+    public void unfollow(FollowDto followDto) {
+        Optional<User> followerOp = userRepository.findByUsername(followDto.follower());
+        Optional<User> toBeUnfollowedOp = userRepository.findByUsername(followDto.followed());
+        if (followerOp.isPresent() && toBeUnfollowedOp.isPresent()) {
+            User follower = followerOp.get();
+            User toBeUnfollowed = toBeUnfollowedOp.get();
+            // if the element doesn't exist, remove() won't change anything
+            follower.getFollowed().remove(toBeUnfollowed);
+            toBeUnfollowed.getFollowers().remove(follower);
+        } else {
+            throw ClientErrors.invalidUnfollowRequest();
+        }
+    }
+
+    public List<UsernameDto> getFollowedList(UsernameDto usernameDto){
+        Optional<User> userOp = userRepository.findByUsername(usernameDto.username());
+        if(userOp.isPresent()){
+            User user = userOp.get();
+            List<UsernameDto> followedList = user.getFollowed().stream()
+                    .map(u -> new UsernameDto(u.getUsername()))
+                    .toList();
+            return  followedList;
+        }
+        throw ClientErrors.userNotFound();
+    }
+
+    public List<UsernameDto> getFollowers(UsernameDto usernameDto){
+        Optional<User> userOp = userRepository.findByUsername(usernameDto.username());
+        if(userOp.isPresent()){
+            User user = userOp.get();
+            List<UsernameDto> followers = user.getFollowers().stream()
+                    .map(u -> new UsernameDto(u.getUsername()))
+                    .toList();
+            return  followers;
+        }
+        throw ClientErrors.userNotFound();
     }
 }

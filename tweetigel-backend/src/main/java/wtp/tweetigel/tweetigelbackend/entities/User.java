@@ -19,9 +19,9 @@ public class User {
     private String username;
     private String password;
     private Instant registeredAt;
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Tweet> tweets;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<User> followed;
     @OneToMany
     private List<User> followers;
@@ -90,4 +90,5 @@ public class User {
     public void setFollowers(List<User> followers) {
         this.followers = followers;
     }
+
 }

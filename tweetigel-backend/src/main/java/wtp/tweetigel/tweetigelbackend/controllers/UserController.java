@@ -4,11 +4,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wtp.tweetigel.tweetigelbackend.dtos.*;
 import wtp.tweetigel.tweetigelbackend.services.UserService;
 import wtp.tweetigel.tweetigelbackend.exceptions.ClientErrors;
+
+import java.util.List;
 
 
 //@CrossOrigin(origins = "http://localhost:5173")
@@ -45,6 +46,53 @@ public class UserController {
             throw ClientErrors.invalidCredentials();
         }
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping(
+            value="/user/follow",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public void follow(
+                        HttpServletRequest request,
+                        @RequestBody FollowDto followDto){
+        userService.follow(followDto);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping(
+            value="/user/unfollow",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public void unfollow(
+            HttpServletRequest request,
+            @RequestBody FollowDto followDto){
+        userService.unfollow(followDto);
+    }
+
+    @GetMapping(
+            value="/user/followedList",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public List<UsernameDto> getFollowedList(
+            HttpServletRequest request,
+            @RequestBody UsernameDto usernameDto){
+        return userService.getFollowedList(usernameDto);
+    }
+
+    @GetMapping(
+            value="/user/followers",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public List<UsernameDto> getFollowers(
+            HttpServletRequest request,
+            @RequestBody UsernameDto usernameDto){
+        return userService.getFollowers(usernameDto);
+    }
+
+
+
 }
 
 //    @PostMapping(

@@ -26,6 +26,10 @@ public abstract class UserControllerTestBase {
         return new MockHttpServletRequest(username, password);
     }
 
+    protected MockHttpServletRequest mockFollowRequest(String follower, String followed){
+        return new MockHttpServletRequest(follower, followed);
+    }
+
     protected HttpServletRequest testUser(){
         return mockRequest("testUser", "test123");
     }
@@ -46,4 +50,9 @@ public abstract class UserControllerTestBase {
         return mockRequest("testUser", "test456");
     }
 
+    protected HttpServletRequest superStar() { return mockRequest("superStar", "test123"); }
+
+    protected HttpServletRequest testFollow(){ return  mockFollowRequest("testUser", "superStar"); }
+
+    protected HttpServletRequest testInvalidFollow(){ return mockFollowRequest("testUser", "superStar2"); }
 }

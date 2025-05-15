@@ -8,10 +8,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 import wtp.tweetigel.tweetigelbackend.controllers.UserController;
-import wtp.tweetigel.tweetigelbackend.dtos.LoggedInStatus;
-import wtp.tweetigel.tweetigelbackend.dtos.UserBriefDto;
-import wtp.tweetigel.tweetigelbackend.dtos.UserCreateDto;
-import wtp.tweetigel.tweetigelbackend.dtos.UserLoginDto;
+import wtp.tweetigel.tweetigelbackend.dtos.*;
+import wtp.tweetigel.tweetigelbackend.entities.User;
 import wtp.tweetigel.tweetigelbackend.services.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,17 +24,14 @@ public class UserControllerTest extends UserControllerTestBase{
     @Autowired
     private UserService userService;
 
-//    @BeforeEach
-//    @Override
-//    public void beforeEach(){
-//        super.beforeEach();
-//    }
+    @BeforeEach
+    public void beforeEach(){
+        UserCreateDto userCreateDto1 = new UserCreateDto("testUser", "test123");
+        UserBriefDto createdTestUser = controller.registerNewUser(testUser(), userCreateDto1);
+    }
 
     @Test
     public void registerUser(){
-        UserCreateDto userCreateDto1 = new UserCreateDto("testUser", "test123");
-        UserBriefDto createdTestUser = controller.registerNewUser(testUser(), userCreateDto1);
-        assertEquals("testUser", createdTestUser.username());
         UserCreateDto userCreateDto2 = new UserCreateDto("testUser", "test123");
         assertThrows(
                 ResponseStatusException.class, () -> controller.registerNewUser(testUser2(), userCreateDto2)
@@ -49,8 +44,6 @@ public class UserControllerTest extends UserControllerTestBase{
 
     @Test
     public void userLogin(){
-        UserCreateDto userCreateDto1 = new UserCreateDto("testUser", "test123");
-        controller.registerNewUser(testUser(), userCreateDto1);
         UserLoginDto testUserWrongPassword = new UserLoginDto("testUser", "test456");
         assertThrows(
                 ResponseStatusException.class, () -> controller.login(testUserWrongPassword(), testUserWrongPassword)
@@ -62,5 +55,21 @@ public class UserControllerTest extends UserControllerTestBase{
         UserLoginDto testUserLoginDto = new UserLoginDto("testUser", "test123");
         assertTrue(userService.isCredentialValid(testUserLoginDto));
         assertEquals(LoggedInStatus.LOGGED_IN, controller.login(testUser(), testUserLoginDto).loggedInStatus());
+    }
+
+    @Test
+    public void follow(){
+        UserCreateDto superStarDto = new UserCreateDto("superStar", "test123");
+        controller.registerNewUser(superStar(), superStarDto);
+        FollowDto testFollowDto = new FollowDto("testUser", "superStar");
+        controller.follow(testFollow(), testFollowDto);
+        assertEquals(1, userService.getFollowers(new UsernameDto("superStar")).size());
+        assertEquals(1, userService.getFollowedList(new UsernameDto("testUser")).size());
+        assertThrows(
+               ResponseStatusException.class, () -> controller.follow(testFollow(), testFollowDto)
+        );
+        assertThrows(
+                ResponseStatusException.class, () -> controller.follow(testInvalidFollow(), new FollowDto("testUser", "superStar2"))
+       );
     }
 }
