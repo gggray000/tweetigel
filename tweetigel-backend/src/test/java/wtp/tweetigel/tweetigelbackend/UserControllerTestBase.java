@@ -52,7 +52,11 @@ public abstract class UserControllerTestBase {
 
     protected HttpServletRequest superStar() { return mockRequest("superStar", "test123"); }
 
+    protected HttpServletRequest superStar2() { return mockRequest("superStar2", "test123"); }
+
     protected HttpServletRequest testFollow(){ return  mockFollowRequest("testUser", "superStar"); }
 
-    protected HttpServletRequest testInvalidFollow(){ return mockFollowRequest("testUser", "superStar2"); }
+    protected HttpServletRequest testFollow2(){ return  mockFollowRequest("testUser", "superStar2"); }
+
+    protected HttpServletRequest testInvalidFollow(){ return mockFollowRequest("testUser", "superStar3"); }
 }

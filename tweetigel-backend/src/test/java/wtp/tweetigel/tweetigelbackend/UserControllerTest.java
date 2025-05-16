@@ -9,7 +9,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 import wtp.tweetigel.tweetigelbackend.controllers.UserController;
 import wtp.tweetigel.tweetigelbackend.dtos.*;
-import wtp.tweetigel.tweetigelbackend.entities.User;
 import wtp.tweetigel.tweetigelbackend.services.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -71,5 +70,25 @@ public class UserControllerTest extends UserControllerTestBase{
         assertThrows(
                 ResponseStatusException.class, () -> controller.follow(testInvalidFollow(), new FollowDto("testUser", "superStar2"))
        );
+    }
+
+    @Test
+    public void unfollow(){
+        UserCreateDto superStarDto = new UserCreateDto("superStar", "test123");
+        controller.registerNewUser(superStar(), superStarDto);
+        UserCreateDto superStar2Dto = new UserCreateDto("superStar2", "test123");
+        controller.registerNewUser(superStar2(), superStar2Dto);
+        FollowDto testFollowDto = new FollowDto("testUser", "superStar");
+        FollowDto testFollow2Dto = new FollowDto("testUser", "superStar2");
+        controller.follow(testFollow(), testFollowDto);
+        controller.follow(testFollow2(), testFollow2Dto);
+        assertEquals(2, userService.getFollowedList(new UsernameDto("testUser")).size());
+        controller.unfollow(testFollow(), testFollowDto);
+        assertEquals(1, userService.getFollowedList(new UsernameDto("testUser")).size());
+        controller.unfollow(testFollow(), testFollowDto);
+        assertEquals(1, userService.getFollowedList(new UsernameDto("testUser")).size());
+        assertThrows(
+                ResponseStatusException.class, () -> controller.unfollow(testInvalidFollow(), new FollowDto("testUser", "superStar3"))
+        );
     }
 }
