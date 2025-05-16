@@ -15,7 +15,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String username;
-    private String password;
+    private String hashedPassword;
     private Instant registeredAt;
     @OneToMany(mappedBy = "author",
                cascade = CascadeType.ALL,
@@ -32,9 +32,9 @@ public class User {
     @ManyToMany(mappedBy = "followed", fetch = FetchType.EAGER)
     private Set<User> followers;
 
-    public User(String username, String password) {
+    public User(String username, String hashedPassword) {
         this.username = username;
-        this.password = password;
+        this.hashedPassword = hashedPassword;
         this.registeredAt = Instant.now();
         this.tweets = new ArrayList<>();
         this.followed = new HashSet<>();
@@ -57,12 +57,12 @@ public class User {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
+    public String getHashedPassword() {
+        return hashedPassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setHashedPassword(String password) {
+        this.hashedPassword = password;
     }
 
     public Instant getRegisteredAt() {

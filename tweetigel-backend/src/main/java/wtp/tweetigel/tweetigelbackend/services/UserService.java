@@ -1,14 +1,13 @@
 package wtp.tweetigel.tweetigelbackend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import wtp.tweetigel.tweetigelbackend.dtos.*;
 import wtp.tweetigel.tweetigelbackend.entities.User;
 import wtp.tweetigel.tweetigelbackend.exceptions.ClientErrors;
 import wtp.tweetigel.tweetigelbackend.repositories.TweetRepository;
 import wtp.tweetigel.tweetigelbackend.repositories.UserRepository;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,15 +16,21 @@ public class UserService {
 
     private UserRepository userRepository;
     private TweetRepository tweetRepository;
+    private BCryptPasswordEncoder passwordEncoder;
+
 
     @Autowired
-    public UserService(UserRepository userRepository, TweetRepository tweetRepository) {
+    public UserService(UserRepository userRepository, TweetRepository tweetRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.tweetRepository = tweetRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     private User toEntity(UserCreateDto userCreateDto) {
-        return new User(userCreateDto.username(), userCreateDto.password());
+        return new User(
+                userCreateDto.username(),
+                passwordEncoder.encode(userCreateDto.password())
+        );
     }
 
     private UserBriefDto toBriefDto(User newUser) {
@@ -55,7 +60,7 @@ public class UserService {
         Optional<User> tobeVerified = userRepository.findByUsername(userLoginDto.username());
         if (tobeVerified.isPresent()) {
             User user = tobeVerified.get();
-            return user.getPassword().equals(userLoginDto.password());
+            return passwordEncoder.matches(userLoginDto.password(), user.getHashedPassword());
         }
         return false;
     }
