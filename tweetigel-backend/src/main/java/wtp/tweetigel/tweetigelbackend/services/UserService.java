@@ -66,11 +66,13 @@ public class UserService {
         if (followerOp.isPresent() && toBeFollowedOp.isPresent()) {
             User follower = followerOp.get();
             User toBeFollowed = toBeFollowedOp.get();
-            if (follower.getFollowed().contains(toBeFollowed) || toBeFollowed.getFollowers().contains(follower)) {
+            if (follower.getFollowed().contains(toBeFollowed)) {
                 throw ClientErrors.noRepeatedFollow();
             }
             follower.getFollowed().add(toBeFollowed);
+            userRepository.save(follower);
             toBeFollowed.getFollowers().add(follower);
+            userRepository.save(toBeFollowed);
         } else {
             throw ClientErrors.invalidFollowRequest();
         }
@@ -84,7 +86,9 @@ public class UserService {
             User toBeUnfollowed = toBeUnfollowedOp.get();
             // if the element doesn't exist, remove() won't change anything
             follower.getFollowed().remove(toBeUnfollowed);
+            userRepository.save(follower);
             toBeUnfollowed.getFollowers().remove(follower);
+            userRepository.save(toBeUnfollowed);
         } else {
             throw ClientErrors.invalidUnfollowRequest();
         }
