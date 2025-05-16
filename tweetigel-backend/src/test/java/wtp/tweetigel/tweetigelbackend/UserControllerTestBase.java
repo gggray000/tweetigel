@@ -30,7 +30,7 @@ public abstract class UserControllerTestBase {
         return new MockHttpServletRequest(username, password);
     }
 
-    protected MockHttpServletRequest mockFollowRequest(){
+    protected MockHttpServletRequest mockRequestWithSession(){
         MockHttpServletRequest  request = new MockHttpServletRequest();
         request.getSession(true).setAttribute(SESSION_USER_NAME, "testUser");
         return request;

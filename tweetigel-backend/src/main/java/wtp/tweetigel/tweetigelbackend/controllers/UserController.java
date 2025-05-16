@@ -10,7 +10,6 @@ import wtp.tweetigel.tweetigelbackend.dtos.*;
 import wtp.tweetigel.tweetigelbackend.entities.User;
 import wtp.tweetigel.tweetigelbackend.services.AuthService;
 import wtp.tweetigel.tweetigelbackend.services.UserService;
-import wtp.tweetigel.tweetigelbackend.exceptions.ClientErrors;
 
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class UserController {
 
     @SecurityRequirement(name = "basicAuth")
     @PostMapping(value="/user/login")
-    public UserLoggedinDto login(HttpServletRequest request){
+    public UserLoggedDto login(HttpServletRequest request){
         User user = authService.logIn(request);
         return userService.getUser(user.getUsername());
     }
@@ -70,9 +69,8 @@ public class UserController {
             value="/user/unfollow",
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public void unfollow(
-            HttpServletRequest request,
-            @RequestBody FollowDto followDto){
+    public void unfollow(HttpServletRequest request,
+                         @RequestBody FollowDto followDto){
         userService.unfollow(request, followDto);
     }
 
@@ -81,8 +79,7 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public List<UsernameDto> getFollowedList(
-            @RequestBody UsernameDto usernameDto){
+    public List<UsernameDto> getFollowedList(@RequestBody UsernameDto usernameDto){
         return userService.getFollowedList(usernameDto);
     }
 
@@ -91,9 +88,18 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public List<UsernameDto> getFollowers(
-            @RequestBody UsernameDto usernameDto){
+    public List<UsernameDto> getFollowers(@RequestBody UsernameDto usernameDto){
         return userService.getFollowers(usernameDto);
+    }
+
+    @SecurityRequirement(name = "basicAuth")
+    @GetMapping(
+            value="/user/search",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public List<UserSearchResultDto> searchUser(HttpServletRequest request,
+                                                @RequestParam("term") String term){
+        return userService.searchUsers(request, term);
     }
 
 }

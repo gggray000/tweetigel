@@ -2,8 +2,6 @@ package wtp.tweetigel.tweetigelbackend.services;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import wtp.tweetigel.tweetigelbackend.dtos.*;
 import wtp.tweetigel.tweetigelbackend.entities.User;
@@ -11,7 +9,8 @@ import wtp.tweetigel.tweetigelbackend.exceptions.ClientErrors;
 import wtp.tweetigel.tweetigelbackend.repositories.TweetRepository;
 import wtp.tweetigel.tweetigelbackend.repositories.UserRepository;
 import java.util.List;
-import java.util.Optional;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class UserService {
@@ -43,7 +42,6 @@ public class UserService {
         );
     }
 
-
     public UserBriefDto register(UserCreateDto userCreateDto) {
         if (userRepository.existsByUsername(userCreateDto.username())) {
             throw ClientErrors.sameUsername(userCreateDto.username());
@@ -56,11 +54,10 @@ public class UserService {
         return toBriefDto(newUser);
     }
 
-    public UserLoggedinDto getUser(String username) {
+    public UserLoggedDto getUser(String username) {
         return userRepository.findByUsername(username)
-                .map(u -> new UserLoggedinDto(u.getId(), u.getUsername()))
+                .map(u -> new UserLoggedDto(u.getId(), u.getUsername()))
                 .orElseThrow(ClientErrors::userNotFound);
-
     }
 
     public void follow(HttpServletRequest request, FollowDto followDto) {
@@ -106,4 +103,16 @@ public class UserService {
                 .map(u -> new UsernameDto(u.getUsername()))
                 .toList();
     }
+
+    public List<UserSearchResultDto> searchUsers(HttpServletRequest request, String term){
+        User user = authService.getAuthenticatedUser(request);
+        List<User> resultList= userRepository.findByUsernameContainingIgnoreCase(term);
+        return resultList.stream()
+                .filter(result -> !result.getUsername().equals(user.getUsername()))
+                .map(result ->
+                    new UserSearchResultDto(
+                            result.getUsername(),
+                            user.getFollowed().contains(result)))
+                .toList();
+        }
 }
