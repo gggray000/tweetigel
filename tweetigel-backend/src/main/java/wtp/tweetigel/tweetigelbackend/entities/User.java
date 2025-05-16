@@ -21,7 +21,7 @@ public class User {
                cascade = CascadeType.ALL,
                orphanRemoval = true,
                fetch = FetchType.EAGER)
-    private List<Tweet> tweets;
+    private List<Post> posts;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_followed",
@@ -36,7 +36,7 @@ public class User {
         this.username = username;
         this.hashedPassword = hashedPassword;
         this.registeredAt = Instant.now();
-        this.tweets = new ArrayList<>();
+        this.posts = new ArrayList<>();
         this.followed = new HashSet<>();
         this.followers = new HashSet<>();
     }
@@ -73,12 +73,12 @@ public class User {
         this.registeredAt = registeredAt;
     }
 
-    public List<Tweet> getTweets() {
-        return tweets;
+    public List<Post> getTweets() {
+        return posts;
     }
 
-    public void setTweets(List<Tweet> tweets) {
-        this.tweets = tweets;
+    public void setTweets(List<Post> tweets) {
+        this.posts = tweets;
     }
 
     public Set<User> getFollowed() {
@@ -102,7 +102,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return this.id == user.id;
+        return Objects.equals(this.id, user.id);
     }
 
     @Override

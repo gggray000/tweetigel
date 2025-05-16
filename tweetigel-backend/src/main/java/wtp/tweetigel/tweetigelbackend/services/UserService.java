@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import wtp.tweetigel.tweetigelbackend.dtos.*;
 import wtp.tweetigel.tweetigelbackend.entities.User;
 import wtp.tweetigel.tweetigelbackend.exceptions.ClientErrors;
-import wtp.tweetigel.tweetigelbackend.repositories.TweetRepository;
 import wtp.tweetigel.tweetigelbackend.repositories.UserRepository;
 import java.util.List;
 
@@ -16,14 +15,12 @@ import static java.util.stream.Collectors.toList;
 public class UserService {
 
     private UserRepository userRepository;
-    private TweetRepository tweetRepository;
     private AuthService authService;
 
 
     @Autowired
-    public UserService(UserRepository userRepository, TweetRepository tweetRepository, AuthService authService) {
+    public UserService(UserRepository userRepository, AuthService authService) {
         this.userRepository = userRepository;
-        this.tweetRepository = tweetRepository;
         this.authService = authService;
     }
 

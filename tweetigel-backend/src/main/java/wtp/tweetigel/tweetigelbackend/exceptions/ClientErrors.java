@@ -4,6 +4,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 public class ClientErrors {
@@ -40,6 +41,14 @@ public class ClientErrors {
 
     public static ResponseStatusException userNotFound() {
         return log(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+    }
+
+    public static ResponseStatusException psotNotFound() {
+        return log(new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found."));
+    }
+
+    public static ResponseStatusException notLikable(){
+        return log(new ResponseStatusException(HttpStatus.CONFLICT, "Unable to like the post."));
     }
 
 }

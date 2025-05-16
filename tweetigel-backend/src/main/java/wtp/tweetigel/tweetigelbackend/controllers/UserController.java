@@ -104,22 +104,3 @@ public class UserController {
 
 }
 
-//    @PostMapping(
-//            value="/user/login",
-//            consumes = MediaType.APPLICATION_JSON_VALUE,
-//            produces = MediaType.APPLICATION_JSON_VALUE
-//    )
-//    public ResponseEntity<String> login(HttpServletRequest request,
-//                                        @RequestBody UserLoginDto userLoginDto){
-//        if(userService.isCredentialValid(userLoginDto)){
-//            // TODO: to be covered by test
-//            return ResponseEntity
-//                    .status(HttpStatus.OK)
-//                    .body("Login successfully as: " + userLoginDto.username());
-//        } else {
-//            throw ClientErrors.invalidCredentials();
-//        }
-//    }
-//}
-
-

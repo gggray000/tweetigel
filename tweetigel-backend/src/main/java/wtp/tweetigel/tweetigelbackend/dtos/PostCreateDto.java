@@ -1,4 +1,4 @@
 package wtp.tweetigel.tweetigelbackend.dtos;
 
-public record TweetCreateDto() {
+public record PostCreateDto(String content) {
 }

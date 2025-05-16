@@ -1,17 +1,16 @@
 package wtp.tweetigel.tweetigelbackend.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.OnDelete;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.hibernate.annotations.OnDeleteAction.CASCADE;
 
 @Entity
-public class Tweet {
+public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,17 +20,17 @@ public class Tweet {
     @OnDelete(action=CASCADE)
     private User author;
     private Instant timestamp;
-    @OneToMany
-    private List<User> likedList;
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<User> likedList;
 
-    public Tweet(String content, User author) {
+    public Post(String content, User author) {
         this.timestamp = Instant.now();
         this.content = content;
         this.author = author;
-        this.likedList = new ArrayList<>();
+        this.likedList = new HashSet<>();
     }
 
-    public Tweet() {
+    public Post() {
 
     }
 
@@ -63,11 +62,11 @@ public class Tweet {
         this.timestamp = timestamp;
     }
 
-    public List<User> getLikedList() {
+    public Set<User> getLikedList() {
         return likedList;
     }
 
-    public void setLikedList(List<User> likedList) {
+    public void setLikedList(Set<User> likedList) {
         this.likedList = likedList;
     }
 }

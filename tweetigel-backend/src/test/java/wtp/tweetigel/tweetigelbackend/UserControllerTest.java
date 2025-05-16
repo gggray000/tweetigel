@@ -28,7 +28,7 @@ public class UserControllerTest extends UserControllerTestBase{
     @BeforeEach
     public void beforeEach(){
         UserCreateDto userCreateDto1 = new UserCreateDto("testUser", "test123");
-        UserBriefDto createdTestUser = controller.registerNewUser(testUser(), userCreateDto1);
+        controller.registerNewUser(testUser(), userCreateDto1);
     }
 
     @Test
@@ -109,5 +109,10 @@ public class UserControllerTest extends UserControllerTestBase{
         searchResultDtoList = controller.searchUser(mockRequestWithSession(), "s");
         System.out.println(searchResultDtoList);
         assertFalse(searchResultDtoList.getFirst().followed());
+    }
+
+    @Test
+    public void createPost(){
+
     }
 }

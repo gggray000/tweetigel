@@ -6,7 +6,7 @@ import java.time.Instant;
 public record UserDto(String id,
                       String username,
                       Instant registeredAt,
-                      List<TweetDto> tweets,
+                      List<PostDto> tweets,
                       List<UserDto> followed,
                       List<UserDto> followers) {
 }
