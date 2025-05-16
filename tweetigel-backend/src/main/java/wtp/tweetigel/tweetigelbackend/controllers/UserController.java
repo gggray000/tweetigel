@@ -1,11 +1,14 @@
 package wtp.tweetigel.tweetigelbackend.controllers;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import wtp.tweetigel.tweetigelbackend.dtos.*;
+import wtp.tweetigel.tweetigelbackend.entities.User;
+import wtp.tweetigel.tweetigelbackend.services.AuthService;
 import wtp.tweetigel.tweetigelbackend.services.UserService;
 import wtp.tweetigel.tweetigelbackend.exceptions.ClientErrors;
 
@@ -16,10 +19,12 @@ import java.util.List;
 @RestController
 public class UserController {
     private final UserService userService;
+    private final AuthService authService;
 
     @Autowired
-    public UserController(UserService userService){
+    public UserController(UserService userService, AuthService authService){
         this.userService = userService;
+        this.authService = authService;
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -33,31 +38,33 @@ public class UserController {
         return userService.register(userCreateDto);
     }
 
-    @PostMapping(
-            value="/user/login",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public UserLoggedinDto login(HttpServletRequest request,
-                                 @RequestBody UserLoginDto userLoginDto){
-        if(userService.isCredentialValid(userLoginDto)){
-            return new UserLoggedinDto(userLoginDto.username(), LoggedInStatus.LOGGED_IN);
-        } else {
-            throw ClientErrors.invalidCredentials();
-        }
+    @SecurityRequirement(name = "basicAuth")
+    @PostMapping(value="/user/login")
+    public UserLoggedinDto login(HttpServletRequest request){
+        User user = authService.logIn(request);
+        return userService.getUser(user.getUsername());
     }
 
+    @SecurityRequirement(name = "basicAuth")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping(value = "/user/logout")
+    public void logOut(HttpServletRequest request) {
+        authService.logOut(request);
+    }
+
+
+    @SecurityRequirement(name = "basicAuth")
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(
             value="/user/follow",
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public void follow(
-                        HttpServletRequest request,
-                        @RequestBody FollowDto followDto){
-        userService.follow(followDto);
+    public void follow(HttpServletRequest request,
+                       @RequestBody FollowDto followDto){
+        userService.follow(request, followDto);
     }
 
+    @SecurityRequirement(name = "basicAuth")
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(
             value="/user/unfollow",
@@ -66,7 +73,7 @@ public class UserController {
     public void unfollow(
             HttpServletRequest request,
             @RequestBody FollowDto followDto){
-        userService.unfollow(followDto);
+        userService.unfollow(request, followDto);
     }
 
     @GetMapping(
@@ -75,7 +82,6 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public List<UsernameDto> getFollowedList(
-            HttpServletRequest request,
             @RequestBody UsernameDto usernameDto){
         return userService.getFollowedList(usernameDto);
     }
@@ -86,12 +92,9 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public List<UsernameDto> getFollowers(
-            HttpServletRequest request,
             @RequestBody UsernameDto usernameDto){
         return userService.getFollowers(usernameDto);
     }
-
-
 
 }
 

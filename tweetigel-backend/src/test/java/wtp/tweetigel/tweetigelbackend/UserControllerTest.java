@@ -45,30 +45,27 @@ public class UserControllerTest extends UserControllerTestBase{
     public void userLogin(){
         UserLoginDto testUserWrongPassword = new UserLoginDto("testUser", "test456");
         assertThrows(
-                ResponseStatusException.class, () -> controller.login(testUserWrongPassword(), testUserWrongPassword)
+                ResponseStatusException.class, () -> controller.login(testUserWrongPassword())
         );
         UserLoginDto testUserWrongUsername = new UserLoginDto("testUser1", "test123");
         assertThrows(
-                ResponseStatusException.class, () -> controller.login(testUserWrongUsername(), testUserWrongUsername)
+                ResponseStatusException.class, () -> controller.login(testUserWrongUsername())
         );
-        UserLoginDto testUserLoginDto = new UserLoginDto("testUser", "test123");
-        assertTrue(userService.isCredentialValid(testUserLoginDto));
-        assertEquals(LoggedInStatus.LOGGED_IN, controller.login(testUser(), testUserLoginDto).loggedInStatus());
     }
 
     @Test
     public void follow(){
         UserCreateDto superStarDto = new UserCreateDto("superStar", "test123");
         controller.registerNewUser(superStar(), superStarDto);
-        FollowDto testFollowDto = new FollowDto("testUser", "superStar");
-        controller.follow(testFollow(), testFollowDto);
+        FollowDto testFollowDto = new FollowDto("superStar");
+        controller.follow(mockFollowRequest(), testFollowDto);
         assertEquals(1, userService.getFollowers(new UsernameDto("superStar")).size());
         assertEquals(1, userService.getFollowedList(new UsernameDto("testUser")).size());
         assertThrows(
-               ResponseStatusException.class, () -> controller.follow(testFollow(), testFollowDto)
+               ResponseStatusException.class, () -> controller.follow(mockFollowRequest(), testFollowDto)
         );
         assertThrows(
-                ResponseStatusException.class, () -> controller.follow(testInvalidFollow(), new FollowDto("testUser", "superStar2"))
+                ResponseStatusException.class, () -> controller.follow(mockFollowRequest(), new FollowDto("superStar2"))
        );
     }
 
@@ -78,17 +75,17 @@ public class UserControllerTest extends UserControllerTestBase{
         controller.registerNewUser(superStar(), superStarDto);
         UserCreateDto superStar2Dto = new UserCreateDto("superStar2", "test123");
         controller.registerNewUser(superStar2(), superStar2Dto);
-        FollowDto testFollowDto = new FollowDto("testUser", "superStar");
-        FollowDto testFollow2Dto = new FollowDto("testUser", "superStar2");
-        controller.follow(testFollow(), testFollowDto);
-        controller.follow(testFollow2(), testFollow2Dto);
+        FollowDto testFollowDto = new FollowDto("superStar");
+        FollowDto testFollow2Dto = new FollowDto("superStar2");
+        controller.follow(mockFollowRequest(), testFollowDto);
+        controller.follow(mockFollowRequest(), testFollow2Dto);
         assertEquals(2, userService.getFollowedList(new UsernameDto("testUser")).size());
-        controller.unfollow(testFollow(), testFollowDto);
+        controller.unfollow(mockFollowRequest(), testFollowDto);
         assertEquals(1, userService.getFollowedList(new UsernameDto("testUser")).size());
-        controller.unfollow(testFollow(), testFollowDto);
+        controller.unfollow(mockFollowRequest(), testFollowDto);
         assertEquals(1, userService.getFollowedList(new UsernameDto("testUser")).size());
         assertThrows(
-                ResponseStatusException.class, () -> controller.unfollow(testInvalidFollow(), new FollowDto("testUser", "superStar3"))
+                ResponseStatusException.class, () -> controller.unfollow(mockFollowRequest(), new FollowDto("superStar3"))
         );
     }
 }

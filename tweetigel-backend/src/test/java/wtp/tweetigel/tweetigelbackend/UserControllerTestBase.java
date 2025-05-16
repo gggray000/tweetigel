@@ -3,11 +3,15 @@ package wtp.tweetigel.tweetigelbackend;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import wtp.tweetigel.tweetigelbackend.entities.User;
 import wtp.tweetigel.tweetigelbackend.repositories.UserRepository;
 
 import java.net.http.HttpRequest;
+import java.nio.charset.StandardCharsets;
+
+import static wtp.tweetigel.tweetigelbackend.services.AuthService.SESSION_USER_NAME;
 
 public abstract class UserControllerTestBase {
 
@@ -26,8 +30,10 @@ public abstract class UserControllerTestBase {
         return new MockHttpServletRequest(username, password);
     }
 
-    protected MockHttpServletRequest mockFollowRequest(String follower, String followed){
-        return new MockHttpServletRequest(follower, followed);
+    protected MockHttpServletRequest mockFollowRequest(){
+        MockHttpServletRequest  request = new MockHttpServletRequest();
+        request.getSession(true).setAttribute(SESSION_USER_NAME, "testUser");
+        return request;
     }
 
     protected HttpServletRequest testUser(){
@@ -54,9 +60,4 @@ public abstract class UserControllerTestBase {
 
     protected HttpServletRequest superStar2() { return mockRequest("superStar2", "test123"); }
 
-    protected HttpServletRequest testFollow(){ return  mockFollowRequest("testUser", "superStar"); }
-
-    protected HttpServletRequest testFollow2(){ return  mockFollowRequest("testUser", "superStar2"); }
-
-    protected HttpServletRequest testInvalidFollow(){ return mockFollowRequest("testUser", "superStar3"); }
 }

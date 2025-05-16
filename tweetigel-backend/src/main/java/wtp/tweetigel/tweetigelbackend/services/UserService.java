@@ -1,6 +1,8 @@
 package wtp.tweetigel.tweetigelbackend.services;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import wtp.tweetigel.tweetigelbackend.dtos.*;
@@ -16,21 +18,14 @@ public class UserService {
 
     private UserRepository userRepository;
     private TweetRepository tweetRepository;
-    private BCryptPasswordEncoder passwordEncoder;
+    private AuthService authService;
 
 
     @Autowired
-    public UserService(UserRepository userRepository, TweetRepository tweetRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, TweetRepository tweetRepository, AuthService authService) {
         this.userRepository = userRepository;
         this.tweetRepository = tweetRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    private User toEntity(UserCreateDto userCreateDto) {
-        return new User(
-                userCreateDto.username(),
-                passwordEncoder.encode(userCreateDto.password())
-        );
+        this.authService = authService;
     }
 
     private UserBriefDto toBriefDto(User newUser) {
@@ -40,6 +35,14 @@ public class UserService {
                 newUser.getRegisteredAt()
         );
     }
+
+    private User toEntity(UserCreateDto userCreateDto) {
+        return new User(
+                userCreateDto.username(),
+                authService.hashPassword(userCreateDto.password())
+        );
+    }
+
 
     public UserBriefDto register(UserCreateDto userCreateDto) {
         if (userRepository.existsByUsername(userCreateDto.username())) {
@@ -53,73 +56,54 @@ public class UserService {
         return toBriefDto(newUser);
     }
 
-    public boolean isCredentialValid(UserLoginDto userLoginDto) {
-        if (!userRepository.existsByUsername(userLoginDto.username())) {
-            return false;
-        }
-        Optional<User> tobeVerified = userRepository.findByUsername(userLoginDto.username());
-        if (tobeVerified.isPresent()) {
-            User user = tobeVerified.get();
-            return passwordEncoder.matches(userLoginDto.password(), user.getHashedPassword());
-        }
-        return false;
+    public UserLoggedinDto getUser(String username) {
+        return userRepository.findByUsername(username)
+                .map(u -> new UserLoggedinDto(u.getId(), u.getUsername()))
+                .orElseThrow(ClientErrors::userNotFound);
+
     }
 
-    public void follow(FollowDto followDto) {
-        Optional<User> followerOp = userRepository.findByUsername(followDto.follower());
-        Optional<User> toBeFollowedOp = userRepository.findByUsername(followDto.followed());
-        if (followerOp.isPresent() && toBeFollowedOp.isPresent()) {
-            User follower = followerOp.get();
-            User toBeFollowed = toBeFollowedOp.get();
-            if (follower.getFollowed().contains(toBeFollowed)) {
-                throw ClientErrors.noRepeatedFollow();
-            }
-            follower.getFollowed().add(toBeFollowed);
-            userRepository.save(follower);
-            toBeFollowed.getFollowers().add(follower);
-            userRepository.save(toBeFollowed);
-        } else {
-            throw ClientErrors.invalidFollowRequest();
+    public void follow(HttpServletRequest request, FollowDto followDto) {
+        User follower = authService.getAuthenticatedUser(request);
+        User toBeFollowed = userRepository.findByUsername(followDto.username())
+                .orElseThrow(ClientErrors::userNotFound);
+
+        if (follower.getFollowed().contains(toBeFollowed)) {
+            throw ClientErrors.noRepeatedFollow();
         }
+
+        follower.getFollowed().add(toBeFollowed);
+        userRepository.save(follower);
+        toBeFollowed.getFollowers().add(follower);
+        userRepository.save(toBeFollowed);
     }
 
-    public void unfollow(FollowDto followDto) {
-        Optional<User> followerOp = userRepository.findByUsername(followDto.follower());
-        Optional<User> toBeUnfollowedOp = userRepository.findByUsername(followDto.followed());
-        if (followerOp.isPresent() && toBeUnfollowedOp.isPresent()) {
-            User follower = followerOp.get();
-            User toBeUnfollowed = toBeUnfollowedOp.get();
+    public void unfollow(HttpServletRequest request, FollowDto followDto) {
+        User follower = authService.getAuthenticatedUser(request);
+        User toBeUnfollowed = userRepository.findByUsername(followDto.username())
+                .orElseThrow(ClientErrors::userNotFound);
             // if the element doesn't exist, remove() won't change anything
-            follower.getFollowed().remove(toBeUnfollowed);
-            userRepository.save(follower);
-            toBeUnfollowed.getFollowers().remove(follower);
-            userRepository.save(toBeUnfollowed);
-        } else {
-            throw ClientErrors.invalidUnfollowRequest();
-        }
+        follower.getFollowed().remove(toBeUnfollowed);
+        userRepository.save(follower);
+        toBeUnfollowed.getFollowers().remove(follower);
+        userRepository.save(toBeUnfollowed);
     }
 
     public List<UsernameDto> getFollowedList(UsernameDto usernameDto){
-        Optional<User> userOp = userRepository.findByUsername(usernameDto.username());
-        if(userOp.isPresent()){
-            User user = userOp.get();
-            List<UsernameDto> followedList = user.getFollowed().stream()
-                    .map(u -> new UsernameDto(u.getUsername()))
-                    .toList();
-            return  followedList;
-        }
-        throw ClientErrors.userNotFound();
+        User user = userRepository.findByUsername(usernameDto.username())
+                .orElseThrow(ClientErrors::userNotFound);
+        return user.getFollowed()
+                .stream()
+                .map(u -> new UsernameDto(u.getUsername()))
+                .toList();
     }
 
     public List<UsernameDto> getFollowers(UsernameDto usernameDto){
-        Optional<User> userOp = userRepository.findByUsername(usernameDto.username());
-        if(userOp.isPresent()){
-            User user = userOp.get();
-            List<UsernameDto> followers = user.getFollowers().stream()
-                    .map(u -> new UsernameDto(u.getUsername()))
-                    .toList();
-            return  followers;
-        }
-        throw ClientErrors.userNotFound();
+        User user = userRepository.findByUsername(usernameDto.username())
+                .orElseThrow(ClientErrors::userNotFound);
+        return user.getFollowers()
+                .stream()
+                .map(u -> new UsernameDto(u.getUsername()))
+                .toList();
     }
 }
