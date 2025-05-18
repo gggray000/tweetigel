@@ -27,6 +27,10 @@ public class ClientErrors {
         return log(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials."));
     }
 
+    public static ResponseStatusException invalidLogOutRequest() {
+        return log(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unable to Log out."));
+    }
+
     public static ResponseStatusException noRepeatedFollow() {
         return log(new ResponseStatusException(HttpStatus.CONFLICT, "Already followed before."));
     }

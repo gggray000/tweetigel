@@ -7,9 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import wtp.tweetigel.tweetigelbackend.dtos.PostCreateDto;
+import wtp.tweetigel.tweetigelbackend.dtos.PostDto;
 import wtp.tweetigel.tweetigelbackend.entities.User;
 import wtp.tweetigel.tweetigelbackend.services.AuthService;
 import wtp.tweetigel.tweetigelbackend.services.PostService;
+
+import java.util.List;
 
 @RestController
 public class PostController {
@@ -26,7 +29,7 @@ public class PostController {
     @SecurityRequirement(name = "basicAuth")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/post",
-                consumes = MediaType.APPLICATION_JSON_VALUE)
+                 consumes = MediaType.APPLICATION_JSON_VALUE)
     public void createPost(HttpServletRequest request, @RequestBody PostCreateDto postCreateDto){
         this.postService.createPost(request, postCreateDto.content());
     }
@@ -39,5 +42,13 @@ public class PostController {
         User user = authService.getAuthenticatedUser(request);
         postService.likePost(user, postId);
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/post/{author}",
+                produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PostDto> getPostsList(@PathVariable("author") String username){
+        return postService.getPostsList(username);
+    }
+
 
 }

@@ -41,7 +41,7 @@ public class UserController {
     @PostMapping(value="/user/login")
     public UserLoggedDto login(HttpServletRequest request){
         User user = authService.logIn(request);
-        return userService.getUser(user.getUsername());
+        return userService.getUserLoggedDto(user.getUsername());
     }
 
     @SecurityRequirement(name = "basicAuth")

@@ -10,11 +10,14 @@ import org.springframework.web.server.ResponseStatusException;
 import wtp.tweetigel.tweetigelbackend.controllers.PostController;
 import wtp.tweetigel.tweetigelbackend.controllers.UserController;
 import wtp.tweetigel.tweetigelbackend.dtos.PostCreateDto;
+import wtp.tweetigel.tweetigelbackend.dtos.PostDto;
 import wtp.tweetigel.tweetigelbackend.dtos.UserCreateDto;
 import wtp.tweetigel.tweetigelbackend.entities.Post;
 import wtp.tweetigel.tweetigelbackend.entities.User;
 import wtp.tweetigel.tweetigelbackend.repositories.PostRepository;
 import wtp.tweetigel.tweetigelbackend.repositories.UserRepository;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -72,6 +75,18 @@ public class PostControllerTest extends PostControllerTestBase {
 
     }
 
+    @Test
+    public void getPostsList(){
+        User testUser = userRepository.findByUsername("testUser").get();
+        postController.createPost(mockRequestWithSession("testUser"), new PostCreateDto("First test post."));
+        postController.createPost(mockRequestWithSession("testUser"), new PostCreateDto("Second test post."));
+        List<PostDto> postsList = postController.getPostsList("testUser");
+        assertEquals(2, postsList.size());
+        assertThrows(
+                ResponseStatusException.class, () -> postController.getPostsList("superStar")
+        );
+
+    }
 
 
 

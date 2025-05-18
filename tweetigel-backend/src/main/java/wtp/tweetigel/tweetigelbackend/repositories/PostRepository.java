@@ -1,10 +1,13 @@
 package wtp.tweetigel.tweetigelbackend.repositories;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import wtp.tweetigel.tweetigelbackend.entities.Post;
 import wtp.tweetigel.tweetigelbackend.entities.User;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,4 +15,6 @@ import java.util.Optional;
 public interface PostRepository extends CrudRepository<Post, String> {
     List<Post> findByAuthor(User author);
     Optional<Post> findById(long id);
+    Page<Post> findPostsByAuthorOrderByTimestampDesc(User author, Pageable pageable);
+
 }

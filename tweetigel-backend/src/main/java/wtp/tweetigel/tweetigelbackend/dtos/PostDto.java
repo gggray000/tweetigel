@@ -3,5 +3,9 @@ package wtp.tweetigel.tweetigelbackend.dtos;
 import java.time.Instant;
 import java.util.List;
 
-public record PostDto(String content, UserDto author, Instant timestamp, List<UserDto> likedList) {
+public record PostDto(long id,
+                      String content,
+                      UsernameDto author,
+                      Instant timestamp,
+                      int likesCount) {
 }

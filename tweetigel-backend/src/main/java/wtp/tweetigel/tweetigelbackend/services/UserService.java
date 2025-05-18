@@ -9,8 +9,6 @@ import wtp.tweetigel.tweetigelbackend.exceptions.ClientErrors;
 import wtp.tweetigel.tweetigelbackend.repositories.UserRepository;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 @Service
 public class UserService {
 
@@ -32,11 +30,19 @@ public class UserService {
         );
     }
 
+    public UsernameDto toUsernameDto(User user) {
+        return new UsernameDto(user.getUsername());
+    }
+
     private User toEntity(UserCreateDto userCreateDto) {
         return new User(
                 userCreateDto.username(),
                 authService.hashPassword(userCreateDto.password())
         );
+    }
+
+    public User getUser(String username){
+        return userRepository.findByUsername(username).orElseThrow(ClientErrors::userNotFound);
     }
 
     public UserBriefDto register(UserCreateDto userCreateDto) {
@@ -51,7 +57,7 @@ public class UserService {
         return toBriefDto(newUser);
     }
 
-    public UserLoggedDto getUser(String username) {
+    public UserLoggedDto getUserLoggedDto(String username) {
         return userRepository.findByUsername(username)
                 .map(u -> new UserLoggedDto(u.getId(), u.getUsername()))
                 .orElseThrow(ClientErrors::userNotFound);

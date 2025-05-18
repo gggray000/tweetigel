@@ -1,6 +1,5 @@
 package wtp.tweetigel.tweetigelbackend.services;
 
-import jakarta.servlet.ServletSecurityElement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -10,7 +9,6 @@ import wtp.tweetigel.tweetigelbackend.entities.User;
 import wtp.tweetigel.tweetigelbackend.exceptions.ClientErrors;
 import wtp.tweetigel.tweetigelbackend.repositories.UserRepository;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -57,6 +55,9 @@ public class AuthService {
     }
 
     public void logOut(HttpServletRequest request){
+        if(request.getSession().getAttribute(SESSION_USER_NAME) == null){
+            throw ClientErrors.invalidLogOutRequest();
+        }
         request.getSession().setAttribute(SESSION_USER_NAME, null);
     }
 
