@@ -9,6 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 import wtp.tweetigel.tweetigelbackend.controllers.UserController;
 import wtp.tweetigel.tweetigelbackend.dtos.*;
+import wtp.tweetigel.tweetigelbackend.entities.User;
 import wtp.tweetigel.tweetigelbackend.services.UserService;
 
 import java.net.http.HttpResponse;
@@ -73,17 +74,19 @@ public class UserControllerTest extends UserControllerTestBase{
     public void follow(){
         UserCreateDto superStarDto = new UserCreateDto("superStar", "test123");
         controller.registerNewUser(superStar(), superStarDto);
-        controller.follow(mockRequestWithSession("testUser"), new FollowDto("superStar"));
-        assertEquals(1, userService.getFollowers(new UsernameDto("superStar")).size());
-        assertEquals(1, userService.getFollowedList(new UsernameDto("testUser")).size());
+
+        controller.follow(mockRequestWithSession("testUser"), new UsernameDto("superStar"));
+        assertEquals(1, controller.getFollowers(new UsernameDto("superStar")).size());
+        assertEquals(1, controller.getFollowedList(new UsernameDto("testUser")).size());
+
         assertThrows(
-               ResponseStatusException.class, () -> controller.follow(mockRequestWithSession("testUser"), new FollowDto("superStar"))
+               ResponseStatusException.class, () -> controller.follow(mockRequestWithSession("testUser"), new UsernameDto("superStar"))
         );
         assertThrows(
-                ResponseStatusException.class, () -> controller.follow(mockRequestWithSession("testUser"), new FollowDto("superStar2"))
+                ResponseStatusException.class, () -> controller.follow(mockRequestWithSession("testUser"), new UsernameDto("superStar2"))
         );
         assertThrows(
-                ResponseStatusException.class, () -> controller.follow(mockRequestWithSession("testUser"), new FollowDto("testUser"))
+                ResponseStatusException.class, () -> controller.follow(mockRequestWithSession("testUser"), new UsernameDto("testUser"))
         );
     }
 
@@ -93,17 +96,29 @@ public class UserControllerTest extends UserControllerTestBase{
         controller.registerNewUser(superStar(), superStarDto);
         UserCreateDto superStar2Dto = new UserCreateDto("superStar2", "test123");
         controller.registerNewUser(superStar2(), superStar2Dto);
-        FollowDto testFollowDto = new FollowDto("superStar");
-        FollowDto testFollow2Dto = new FollowDto("superStar2");
-        controller.follow(mockRequestWithSession("testUser"), testFollowDto);
-        controller.follow(mockRequestWithSession("testUser"), testFollow2Dto);
-        assertEquals(2, userService.getFollowedList(new UsernameDto("testUser")).size());
-        controller.unfollow(mockRequestWithSession("testUser"), testFollowDto);
-        assertEquals(1, userService.getFollowedList(new UsernameDto("testUser")).size());
-        controller.unfollow(mockRequestWithSession("testUser"), testFollowDto);
-        assertEquals(1, userService.getFollowedList(new UsernameDto("testUser")).size());
+
+        UsernameDto superStar = new UsernameDto("superStar");
+        UsernameDto superStar2 = new UsernameDto("superStar2");
+        controller.follow(mockRequestWithSession("testUser"), superStar);
+        controller.follow(mockRequestWithSession("testUser"), superStar2);
+        assertEquals(2, controller.getFollowedList(new UsernameDto("testUser")).size());
+
+        controller.unfollow(mockRequestWithSession("testUser"), superStar);
+        assertEquals(0, controller.getFollowers(new UsernameDto("superStar")).size());
+        assertEquals(1, controller.getFollowers(new UsernameDto("superStar2")).size());
+        assertEquals(1, controller.getFollowedList(new UsernameDto("testUser")).size());
+
+        controller.unfollow(mockRequestWithSession("testUser"), superStar);
+        assertEquals(0, controller.getFollowers(new UsernameDto("superStar")).size());
+        assertEquals(1, controller.getFollowers(new UsernameDto("superStar2")).size());
+        assertEquals(1, controller.getFollowedList(new UsernameDto("testUser")).size());
+
         assertThrows(
-                ResponseStatusException.class, () -> controller.unfollow(mockRequestWithSession("testUser"), new FollowDto("superStar3"))
+                ResponseStatusException.class, () -> controller.unfollow(mockRequestWithSession("testUser"), new UsernameDto("superStar3"))
+        );
+
+        assertThrows(
+                ResponseStatusException.class, () -> controller.unfollow(mockRequestWithSession("testUser"), new UsernameDto("testUser"))
         );
     }
 
@@ -113,15 +128,16 @@ public class UserControllerTest extends UserControllerTestBase{
         controller.registerNewUser(superStar(), superStarDto);
         UserCreateDto superStar2Dto = new UserCreateDto("superStar2", "test123");
         controller.registerNewUser(superStar2(), superStar2Dto);
-        FollowDto testFollowDto = new FollowDto("superStar");
-        controller.follow(mockRequestWithSession("testUser"), testFollowDto);
+
+        UsernameDto superStar = new UsernameDto("superStar");
+        controller.follow(mockRequestWithSession("testUser"), superStar);
 
         List<UserSearchResultDto> searchResultDtoList = controller.searchUser(mockRequestWithSession("testUser"), "s");
         System.out.println(searchResultDtoList);
         assertEquals(2, searchResultDtoList.size());
         assertFalse(searchResultDtoList.get(1).followed());
 
-        controller.unfollow(mockRequestWithSession("testUser"), new FollowDto("superStar"));
+        controller.unfollow(mockRequestWithSession("testUser"), superStar);
         searchResultDtoList = controller.searchUser(mockRequestWithSession("testUser"), "s");
         System.out.println(searchResultDtoList);
         assertFalse(searchResultDtoList.getFirst().followed());

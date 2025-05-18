@@ -16,5 +16,6 @@ public interface PostRepository extends CrudRepository<Post, String> {
     List<Post> findByAuthor(User author);
     Optional<Post> findById(long id);
     Page<Post> findPostsByAuthorOrderByTimestampDesc(User author, Pageable pageable);
+    Page<Post> findAll(Pageable pageable);
 
 }

@@ -59,8 +59,8 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public void follow(HttpServletRequest request,
-                       @RequestBody FollowDto followDto){
-        userService.follow(request, followDto);
+                       @RequestBody UsernameDto usernameDto){
+        userService.follow(request, usernameDto);
     }
 
     @SecurityRequirement(name = "basicAuth")
@@ -70,8 +70,8 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public void unfollow(HttpServletRequest request,
-                         @RequestBody FollowDto followDto){
-        userService.unfollow(request, followDto);
+                         @RequestBody UsernameDto usernameDto){
+        userService.unfollow(request, usernameDto);
     }
 
     @GetMapping(

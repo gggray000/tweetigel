@@ -44,10 +44,17 @@ public class PostController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/post/{author}",
+    @GetMapping(value = "/posts/{author}",
                 produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PostDto> getPostsList(@PathVariable("author") String username){
         return postService.getPostsList(username);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/posts",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PostDto> getPostsFeed(){
+        return postService.getPostsFeed();
     }
 
 

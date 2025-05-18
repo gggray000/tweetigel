@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import wtp.tweetigel.tweetigelbackend.dtos.PostDto;
 import wtp.tweetigel.tweetigelbackend.entities.Post;
@@ -61,6 +62,15 @@ public class PostService {
         Pageable mostRecentTwentyPosts = PageRequest.of(0,20);
         Page<Post> postsPage = postRepository.findPostsByAuthorOrderByTimestampDesc(user, mostRecentTwentyPosts);
         return postsPage
+                .get()
+                .map(this::toDto)
+                .toList();
+    }
+
+    public List<PostDto> getPostsFeed(){
+        Pageable mostRecentTwentyPosts = PageRequest.of(0, 20, Sort.by("timestamp").descending());
+        Page<Post> postPage = postRepository.findAll(mostRecentTwentyPosts);
+        return postPage
                 .get()
                 .map(this::toDto)
                 .toList();

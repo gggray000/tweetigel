@@ -77,7 +77,6 @@ public class PostControllerTest extends PostControllerTestBase {
 
     @Test
     public void getPostsList(){
-        User testUser = userRepository.findByUsername("testUser").get();
         postController.createPost(mockRequestWithSession("testUser"), new PostCreateDto("First test post."));
         postController.createPost(mockRequestWithSession("testUser"), new PostCreateDto("Second test post."));
         List<PostDto> postsList = postController.getPostsList("testUser");
@@ -85,7 +84,20 @@ public class PostControllerTest extends PostControllerTestBase {
         assertThrows(
                 ResponseStatusException.class, () -> postController.getPostsList("superStar")
         );
+    }
 
+    @Test
+    public void getPostsFeed(){
+        postController.createPost(mockRequestWithSession("testUser"), new PostCreateDto("First test post."));
+        postController.createPost(mockRequestWithSession("testUser"), new PostCreateDto("Second test post."));
+
+        UserCreateDto superStarDto = new UserCreateDto("superStar", "test123");
+        userController.registerNewUser(superStar(), superStarDto);
+        postController.createPost(mockRequestWithSession("superStar"), new PostCreateDto("Random superStar's daily."));
+        postController.createPost(mockRequestWithSession("superStar"), new PostCreateDto("Another superStar's daily."));
+
+        List<PostDto> postsList = postController.getPostsFeed();
+        assertEquals(4, postsList.size());
     }
 
 

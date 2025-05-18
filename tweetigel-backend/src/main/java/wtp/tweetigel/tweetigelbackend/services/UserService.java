@@ -63,13 +63,17 @@ public class UserService {
                 .orElseThrow(ClientErrors::userNotFound);
     }
 
-    public void follow(HttpServletRequest request, FollowDto followDto) {
+    public void follow(HttpServletRequest request, UsernameDto usernameDto) {
         User follower = authService.getAuthenticatedUser(request);
-        User toBeFollowed = userRepository.findByUsername(followDto.username())
+        User toBeFollowed = userRepository.findByUsername(usernameDto.username())
                 .orElseThrow(ClientErrors::userNotFound);
 
         if (follower.getFollowed().contains(toBeFollowed)) {
             throw ClientErrors.noRepeatedFollow();
+        }
+
+        if(follower.equals(toBeFollowed)){
+            throw ClientErrors.invalidFollowRequest();
         }
 
         follower.getFollowed().add(toBeFollowed);
@@ -78,10 +82,13 @@ public class UserService {
         userRepository.save(toBeFollowed);
     }
 
-    public void unfollow(HttpServletRequest request, FollowDto followDto) {
+    public void unfollow(HttpServletRequest request, UsernameDto usernameDto) {
         User follower = authService.getAuthenticatedUser(request);
-        User toBeUnfollowed = userRepository.findByUsername(followDto.username())
+        User toBeUnfollowed = userRepository.findByUsername(usernameDto.username())
                 .orElseThrow(ClientErrors::userNotFound);
+        if(follower.equals(toBeUnfollowed)){
+            throw ClientErrors.invalidFollowRequest();
+        }
             // if the element doesn't exist, remove() won't change anything
         follower.getFollowed().remove(toBeUnfollowed);
         userRepository.save(follower);
