@@ -1,6 +1,8 @@
 package wtp.tweetigel.tweetigelbackend.services;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,11 +22,13 @@ public class AuthService {
     public static final String SESSION_USER_NAME = "tweetigel-session-user-name";
     private BCryptPasswordEncoder passwordEncoder;
     private UserRepository userRepository;
+    private Logger logger;
 
     @Autowired
     public AuthService (BCryptPasswordEncoder passwordEncoder, UserRepository userRepository){
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+        this.logger = LoggerFactory.getLogger("tweetIgel.AuthService");
     }
 
     public String hashPassword(String password){
@@ -44,21 +48,25 @@ public class AuthService {
             String password = parts[1];
             User user = userRepository.findByUsername(userName).orElseThrow();
             if (!passwordEncoder.matches(password, user.getHashedPassword())) {
-                throw ClientErrors.invalidCredentials();
+                throw new Exception();
             }
+            logger.info("User logged in: {}", userName);
             request.getSession().setAttribute(SESSION_USER_NAME, userName);
+            logger.info("Login Session Info: {}", request.getSession().getAttribute(SESSION_USER_NAME));
             return user;
         } catch (Exception e) {
-            logOut(request);
+            request.getSession().setAttribute(SESSION_USER_NAME, null);
             throw ClientErrors.invalidCredentials();
         }
     }
 
     public void logOut(HttpServletRequest request){
-        if(request.getSession().getAttribute(SESSION_USER_NAME) == null){
+        logger.info("Logout Session Info: {}", request.getSession().getAttribute(SESSION_USER_NAME));
+        if(request.getSession().getAttribute(SESSION_USER_NAME) != null){
+            request.getSession().setAttribute(SESSION_USER_NAME, null);
+        }else{
             throw ClientErrors.invalidLogOutRequest();
         }
-        request.getSession().setAttribute(SESSION_USER_NAME, null);
     }
 
     public User getAuthenticatedUser(HttpServletRequest request){

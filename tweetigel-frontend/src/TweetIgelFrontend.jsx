@@ -1,0 +1,34 @@
+import TweetIgelHeader from "./TweetIgelHeader.jsx";
+import TweetIgelFeed from "./TweetIgelFeed.jsx";
+import {useState} from "react";
+
+function TweetIgelFrontend(){
+    const [auth, setAuth] = useState({username:null, password: null, loggedIn: false});
+    const [username, setUsername] = useState(undefined);
+    const [view, setView] = useState("loggedOut");
+
+
+
+    return <>
+        <header>
+            <TweetIgelHeader auth={auth} setAuth={setAuth} username={username} setUsername={setUsername} setView={setView}/>
+        </header>
+        <main>
+            {view === "loggedOut"
+                ?<div>
+                    <h3>Welcome to TweetIgel!</h3>
+                    <h4>Please log in or register to continue.</h4>
+                    <img src="/tweetigel_logo.png" width="100" alt="Logo"/>
+                </div>
+                :<div>
+                    <h2>Hi, {username}!</h2>
+                    <TweetIgelFeed></TweetIgelFeed>
+                </div>
+            }
+        </main>
+        <footer>TweetIgel 2025 By Ruilin Gan</footer>
+
+    </>
+}
+
+export default TweetIgelFrontend;
