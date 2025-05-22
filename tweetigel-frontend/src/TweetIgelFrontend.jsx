@@ -22,7 +22,10 @@ function TweetIgelFrontend(){
                     <img src="/tweetigel_logo.png" width="100" alt="Logo"/>
                 </div>
                 :<div>
-                    <h3>Hi, {username}!</h3>
+                    <h3>
+                        <img src="/tweetigel_logo.png" width="100" alt="Logo"/>
+                        Hi, {username}!
+                    </h3>
                     <TweetEditor></TweetEditor>
                     <h4>What's new</h4>
                     <TweetIgelFeed></TweetIgelFeed>
