@@ -1,6 +1,7 @@
 import TweetIgelHeader from "./TweetIgelHeader.jsx";
 import TweetIgelFeed from "./TweetIgelFeed.jsx";
 import {useState} from "react";
+import TweetEditor from "./TweetEditor.jsx";
 
 function TweetIgelFrontend(){
     const [auth, setAuth] = useState({username:null, password: null, loggedIn: false});
@@ -21,12 +22,14 @@ function TweetIgelFrontend(){
                     <img src="/tweetigel_logo.png" width="100" alt="Logo"/>
                 </div>
                 :<div>
-                    <h2>Hi, {username}!</h2>
+                    <h3>Hi, {username}!</h3>
+                    <TweetEditor></TweetEditor>
+                    <h4>What's new</h4>
                     <TweetIgelFeed></TweetIgelFeed>
                 </div>
             }
         </main>
-        <footer>TweetIgel 2025 By Ruilin Gan</footer>
+        <footer>TweetIgel - SoSe2025 - Web Technology Project By Ruilin Gan</footer>
 
     </>
 }
