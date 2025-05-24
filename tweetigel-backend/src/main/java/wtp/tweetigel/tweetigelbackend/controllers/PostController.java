@@ -26,7 +26,6 @@ public class PostController {
         this.authService = authService;
     }
 
-    @SecurityRequirement(name = "basicAuth")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/post",
                  consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -34,7 +33,6 @@ public class PostController {
         this.postService.createPost(request, postCreateDto.content());
     }
 
-    @SecurityRequirement(name = "basicAuth")
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(value = "/post/{id}/like")
     public void likePost(HttpServletRequest request,

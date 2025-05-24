@@ -44,15 +44,12 @@ public class UserController {
         return userService.getUserLoggedDto(user.getUsername());
     }
 
-    @SecurityRequirement(name = "basicAuth")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping(value = "/user/logout")
     public void logOut(HttpServletRequest request) {
         authService.logOut(request);
     }
 
-
-    @SecurityRequirement(name = "basicAuth")
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(
             value="/user/follow",
@@ -63,7 +60,6 @@ public class UserController {
         userService.follow(request, usernameDto);
     }
 
-    @SecurityRequirement(name = "basicAuth")
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(
             value="/user/unfollow",
@@ -92,7 +88,6 @@ public class UserController {
         return userService.getFollowers(usernameDto);
     }
 
-    @SecurityRequirement(name = "basicAuth")
     @GetMapping(
             value="/user/search",
             produces = MediaType.APPLICATION_JSON_VALUE
