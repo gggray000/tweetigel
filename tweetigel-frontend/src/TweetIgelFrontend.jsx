@@ -25,7 +25,8 @@ function TweetIgelFrontend(){
                     <h5><i>Please log in or register to continue.</i></h5>
                     <img src="/tweetigel_logo.png" width="100" alt="Logo"/>
                 </div>
-                : view === "loggedIn" ?<div>
+                : view === "loggedIn" ?
+                    <div>
                         <h3>
                             <img src="/tweetigel_logo.png" width="100" alt="Logo"/>
                             Hi, {username}!
@@ -34,15 +35,18 @@ function TweetIgelFrontend(){
                         <h4>What's new</h4>
                         <TweetFeed></TweetFeed>
                     </div>
-                    : view === "search" ? <div>
-                            <SearchResultView result={result} setView={setView}/>
+                    : view === "search" ?
+                        <div>
+                            <SearchResultView result={result} setResult={setResult} setView={setView} auth={auth} />
                         </div>
                         :<>
                             </>
             }
         </main>
         <hr />
-        <footer><i><small>TweetIgel - SoSe2025 - Coursework for "Web Technology Project" By R.Gan</small></i></footer>
+        <footer>
+            <i><small>TweetIgel - SoSe2025 - Coursework for "Web Technology Project" By R.Gan</small></i>
+        </footer>
 
     </>
 }

@@ -1,4 +1,6 @@
-function SearchResultView({result, setView}){
+import FollowButton from "./FollowButton.jsx";
+
+function SearchResultView({result, setResult, setView}){
 
     function goBack(){
         setView("loggedIn")
@@ -23,6 +25,7 @@ function SearchResultView({result, setView}){
                     <tr>
                         <th scope="col"><h5>Username</h5></th>
                         <th scope="col"><h5>Followed</h5></th>
+                        <th scope="col"><h5>Action</h5></th>
                     </tr>
 
                 </thead>
@@ -31,6 +34,10 @@ function SearchResultView({result, setView}){
                     <tr key={user.username}>
                         <th scope="row"><i>{user.username}</i></th>
                         <td>{user.followed?"✅":"❌"}</td>
+                        <td>{user.followed?
+                            <FollowButton username={user.username} followed={true} result={result} setResult={setResult} />
+                            : <FollowButton username={user.username} followed={false} result={result} setResult={setResult}/>}
+                        </td>
                     </tr>
                     ))
                 }

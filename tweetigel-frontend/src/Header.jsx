@@ -1,6 +1,6 @@
 import {useContext, useRef, useState} from "react";
 import {API} from "./Context.js";
-import {basic, contentTypeJson} from "./Headers.js";
+import {basic, contentTypeJson} from "./RequestHeaders.js";
 
 function Header({auth, setAuth, username, setUsername, setView, setResult}){
     const api = useContext(API)
@@ -12,7 +12,6 @@ function Header({auth, setAuth, username, setUsername, setView, setResult}){
     function logOut(){
         fetch(api+"/user/logout",{
             method:"POST",
-            headers:basic(auth),
             credentials: 'include'
         })
             .then(response => {
@@ -62,7 +61,6 @@ function Header({auth, setAuth, username, setUsername, setView, setResult}){
         event.preventDefault();
         fetch(api+"/user/search?term=" + searchTerm.current.value,
             {method:"GET",
-                 headers:basic(auth),
                  credentials: 'include'
             }).then(response => {
             if(!response.ok) {
@@ -71,8 +69,8 @@ function Header({auth, setAuth, username, setUsername, setView, setResult}){
             }else{
                 return response.json()
             }
-        }).then(parsedResponse => {
-            setResult(parsedResponse)
+        }).then(result => {
+            setResult(result)
             setView("search")
         })
         searchTerm.current.value = ""
@@ -116,7 +114,7 @@ function Header({auth, setAuth, username, setUsername, setView, setResult}){
                 <ul>
                     <li>
                         <form role = "search" onSubmit={search}>
-                            <input name="search" type="username" placeholder="Enter username to search user" ref={searchTerm}/>
+                            <input name="search" type="username" placeholder="Username" ref={searchTerm}/>
                             <input type="submit" value="Search"/>
                         </form>
                     </li>
