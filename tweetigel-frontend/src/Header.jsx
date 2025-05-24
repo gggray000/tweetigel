@@ -2,11 +2,12 @@ import {useContext, useRef, useState} from "react";
 import {API} from "./Context.js";
 import {basic, contentTypeJson} from "./Headers.js";
 
-function TweetIgelHeader({auth, setAuth, username, setUsername, setView}){
+function Header({auth, setAuth, username, setUsername, setView, setResult}){
     const api = useContext(API)
     const [registering, setRegistering] = useState(false)
     const name = useRef(undefined)
     const password = useRef(undefined)
+    const searchTerm = useRef(undefined)
 
     function logOut(){
         fetch(api+"/user/logout",{
@@ -42,7 +43,7 @@ function TweetIgelHeader({auth, setAuth, username, setUsername, setView}){
 
     function register(){
         event.preventDefault();
-        const registerAuth = {username:name.current.value, password:password.current.value};
+        const registerAuth = {username: name.current.value, password: password.current.value}
         fetch(api+"/register",
             {method:"POST",
                  headers:contentTypeJson(),
@@ -57,16 +58,37 @@ function TweetIgelHeader({auth, setAuth, username, setUsername, setView}){
         })
     }
 
+    function search(){
+        event.preventDefault();
+        fetch(api+"/user/search?term=" + searchTerm.current.value,
+            {method:"GET",
+                 headers:basic(auth),
+                 credentials: 'include'
+            }).then(response => {
+            if(!response.ok) {
+                alert("Unable to Search");
+                return []
+            }else{
+                return response.json()
+            }
+        }).then(parsedResponse => {
+            setResult(parsedResponse)
+            setView("search")
+        })
+        searchTerm.current.value = ""
+    }
+
     if(!auth.loggedIn){
         return <>
             <nav>
                 <ul>
-                    <li><label>Currently Not Logged in.</label></li>
-                </ul>
-                <ul>
-                    <input id="new-account" type="checkbox" defaultValue={registering}
-                           onChange={e => setRegistering(e.target.checked)}/>
-                    <label htmlFor="new-account">Create a new account</label>
+                    <li>
+                    <label htmlFor="new-account"><small>
+                        <input id="new-account" type="checkbox" defaultValue={registering}
+                               onChange={e => setRegistering(e.target.checked)}/>
+                        Create an new account</small>
+                    </label>
+                    </li>
                 </ul>
                 <ul>
                     <form onSubmit={registering ? register : logIn}>
@@ -86,15 +108,15 @@ function TweetIgelHeader({auth, setAuth, username, setUsername, setView}){
         return <>
             <nav>
                 <ul>
-                    <li><label>Logged In As {username}</label></li>
+                    <li><label><small>Logged in as {username}</small></label></li>
                 </ul>
                 <ul>
                     <li><input type="button" value="Log Out" onClick={logOut}/></li>
                 </ul>
                 <ul>
                     <li>
-                        <form role = "search">
-                            <input name="search" type="username" placeholder="Enter username to search user"/>
+                        <form role = "search" onSubmit={search}>
+                            <input name="search" type="username" placeholder="Enter username to search user" ref={searchTerm}/>
                             <input type="submit" value="Search"/>
                         </form>
                     </li>
@@ -105,4 +127,4 @@ function TweetIgelHeader({auth, setAuth, username, setUsername, setView}){
 
 }
 
-export default TweetIgelHeader
+export default Header
