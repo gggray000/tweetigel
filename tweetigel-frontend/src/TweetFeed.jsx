@@ -74,17 +74,17 @@ function TweetFeed(){
                             {post.content}
                             <footer>
                                 <div className="grid">
-                                    Likes: {post.likesCount}<br/>
                                     {post.timestamp}
-                                    <form onSubmit={post.likeable===true? () => {like(post.id)}
-                                                        : post.likeable===false? () => {unlike(post.id)}
-                                                            : undefined}>
-                                        {post.likeable === true? <input type="submit" value="Like"/>
-                                            :post.likeable===false? <input type="submit" value="unlike"/>
+                                    {post.likeable === true?
+                                        <button class="pico-background-pink-450" onClick={() => like(post.id)}>
+                                            Like ♡ {post.likesCount}
+                                        </button>
+                                            :post.likeable===false?
+                                            <button className="pico-background-zinc-500" onClick={() => unlike(post.id)}>
+                                                Unlike ♥ {post.likesCount}
+                                            </button>
                                                 : <></>
-                                        }
-                                    </form>
-
+                                    }
                                 </div>
 
                             </footer>

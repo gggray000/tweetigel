@@ -109,7 +109,7 @@ function Header({auth, setAuth, username, setUsername, setView, setResult}){
                     <li><label><small>Logged in as {username}</small></label></li>
                 </ul>
                 <ul>
-                    <li><input type="button" value="Log Out" onClick={logOut}/></li>
+                    <li><button className="pico-background-zinc-500" onClick={logOut}>Log Out</button></li>
                 </ul>
                 <ul>
                     <li>

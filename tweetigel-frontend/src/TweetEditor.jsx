@@ -33,10 +33,7 @@ function TweetEditor(){
             <textarea placeholder="Enter content here." ref={content}></textarea>
         </ul>
         <ul>
-            <form onSubmit={createPost}>
-                <input type="submit" value="Post!"/>
-            </form>
-
+            <button className="pico-background-jade-350" onClick={createPost}>Post!</button>
         </ul>
     </>
 }
