@@ -32,16 +32,15 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public UserBriefDto registerNewUser(HttpServletRequest request,
-                                        @RequestBody UserCreateDto userCreateDto){
+    public UserInfoConfirmDto registerNewUser(@RequestBody UserCreateDto userCreateDto){
         return userService.register(userCreateDto);
     }
 
     @SecurityRequirement(name = "basicAuth")
     @PostMapping(value="/user/login")
-    public UserLoggedDto login(HttpServletRequest request){
+    public UserInfoConfirmDto login(HttpServletRequest request){
         User user = authService.logIn(request);
-        return userService.getUserLoggedDto(user.getUsername());
+        return userService.getUserInfoConfirmDto(user.getUsername());
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -95,6 +94,17 @@ public class UserController {
     public List<UserSearchResultDto> searchUser(HttpServletRequest request,
                                                 @RequestParam("term") String term){
         return userService.searchUsers(request, term);
+    }
+
+    // Need to be changed to use session
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PutMapping(
+            value="/changePassword",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public UserInfoConfirmDto changePassword(@RequestBody UserCreateDto userCreateDto){
+        return userService.changePassword(userCreateDto);
     }
 
 }

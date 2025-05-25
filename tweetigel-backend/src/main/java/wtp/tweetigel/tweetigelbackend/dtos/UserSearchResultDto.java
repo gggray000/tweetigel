@@ -1,4 +1,4 @@
 package wtp.tweetigel.tweetigelbackend.dtos;
 
-public record UserSearchResultDto(String username, boolean followed) {
+public record UserSearchResultDto(String username, Boolean followed) {
 }

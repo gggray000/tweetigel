@@ -49,14 +49,16 @@ function FollowButton({username, followed, result, setResult}){
         })
     }
 
-    if(followed){
+    if(followed===true){
         return <>
             <input type="button" value="Unfollow" onClick={unfollow}/>
         </>
-    } else {
+    } else if(followed===false){
         return <>
             <input type="button" value="Follow" onClick={follow}/>
         </>
+    } else {
+        return <></>
     }
 }
 

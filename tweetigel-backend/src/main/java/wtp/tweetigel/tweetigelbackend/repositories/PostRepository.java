@@ -8,6 +8,7 @@ import wtp.tweetigel.tweetigelbackend.entities.Post;
 import wtp.tweetigel.tweetigelbackend.entities.User;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ public interface PostRepository extends CrudRepository<Post, String> {
     List<Post> findByAuthor(User author);
     Optional<Post> findById(long id);
     Page<Post> findPostsByAuthorOrderByTimestampDesc(User author, Pageable pageable);
-    Page<Post> findAll(Pageable pageable);
+    Page<Post> findPostByAuthorIsIn(Collection<User> authors,
+                                    Pageable pageable);
 
 }

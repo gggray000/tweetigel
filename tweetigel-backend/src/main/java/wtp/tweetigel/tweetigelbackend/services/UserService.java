@@ -22,8 +22,8 @@ public class UserService {
         this.authService = authService;
     }
 
-    private UserBriefDto toBriefDto(User newUser) {
-        return new UserBriefDto(
+    private UserInfoConfirmDto toUserInfoConfirmDto(User newUser) {
+        return new UserInfoConfirmDto(
                 newUser.getId(),
                 newUser.getUsername(),
                 newUser.getRegisteredAt()
@@ -45,7 +45,7 @@ public class UserService {
         return userRepository.findByUsername(username).orElseThrow(ClientErrors::userNotFound);
     }
 
-    public UserBriefDto register(UserCreateDto userCreateDto) {
+    public UserInfoConfirmDto register(UserCreateDto userCreateDto) {
         if (userRepository.existsByUsername(userCreateDto.username())) {
             throw ClientErrors.sameUsername(userCreateDto.username());
         }
@@ -54,12 +54,12 @@ public class UserService {
         }
         User newUser = toEntity(userCreateDto);
         userRepository.save(newUser);
-        return toBriefDto(newUser);
+        return toUserInfoConfirmDto(newUser);
     }
 
-    public UserLoggedDto getUserLoggedDto(String username) {
+    public UserInfoConfirmDto getUserInfoConfirmDto(String username) {
         return userRepository.findByUsername(username)
-                .map(u -> new UserLoggedDto(u.getId(), u.getUsername()))
+                .map(u -> new UserInfoConfirmDto(u.getId(), u.getUsername(),u.getRegisteredAt()))
                 .orElseThrow(ClientErrors::userNotFound);
     }
 
@@ -125,4 +125,15 @@ public class UserService {
                             user.getFollowed().contains(result)))
                 .toList();
         }
+
+    public UserInfoConfirmDto changePassword(UserCreateDto userCreateDto) {
+        if (userCreateDto.username().isBlank() || userCreateDto.password().isBlank()) {
+            throw ClientErrors.notBlankAllowed();
+        }
+        User user = userRepository.findByUsername(userCreateDto.username())
+                .orElseThrow(ClientErrors::userNotFound);
+        user.setHashedPassword(authService.hashPassword(userCreateDto.password()));
+        userRepository.save(user);
+        return toUserInfoConfirmDto(user);
+    }
 }

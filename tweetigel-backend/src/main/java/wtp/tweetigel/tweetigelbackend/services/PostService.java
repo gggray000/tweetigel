@@ -14,7 +14,8 @@ import wtp.tweetigel.tweetigelbackend.exceptions.ClientErrors;
 import wtp.tweetigel.tweetigelbackend.repositories.PostRepository;
 
 
-
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -32,13 +33,18 @@ public class PostService {
         this.userService = userService;
     }
 
-    private PostDto toDto(Post post){
+    private PostDto toDto(Post post, User user){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss").withZone(ZoneId.systemDefault());
+
         return new PostDto(
                 post.getId(),
                 post.getContent(),
                 userService.toUsernameDto(post.getAuthor()),
-                post.getTimestamp(),
-                post.getLikedList().size()
+                formatter.format(post.getTimestamp()),
+                post.getLikedList().size(),
+                post.getLikedList().contains(user)? false
+                        : post.getAuthor().equals(user)? null
+                            : true
         );
     }
 
@@ -49,7 +55,7 @@ public class PostService {
     }
 
     public void likePost(User user, long id) {
-        Post post = postRepository.findById(id).orElseThrow(ClientErrors::psotNotFound);
+        Post post = postRepository.findById(id).orElseThrow(ClientErrors::postNotFound);
         if(post.getAuthor().equals(user) || post.getLikedList().contains(user)){
             throw ClientErrors.notLikable();
         }
@@ -57,22 +63,33 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public List<PostDto> getPostsList(String username){
-        User user = userService.getUser(username);
+    public void unlikePost(User user, long id) {
+        Post post = postRepository.findById(id).orElseThrow(ClientErrors::postNotFound);
+        if(post.getAuthor().equals(user) || !post.getLikedList().contains(user)){
+            throw ClientErrors.notUnlikable();
+        }
+        post.getLikedList().remove(user);
+        postRepository.save(post);
+    }
+
+    public List<PostDto> getPostsList(HttpServletRequest request, String username){
+        User user = authService.getAuthenticatedUser(request);
+        User toBeViewed = userService.getUser(username);
         Pageable mostRecentTwentyPosts = PageRequest.of(0,20);
-        Page<Post> postsPage = postRepository.findPostsByAuthorOrderByTimestampDesc(user, mostRecentTwentyPosts);
+        Page<Post> postsPage = postRepository.findPostsByAuthorOrderByTimestampDesc(toBeViewed, mostRecentTwentyPosts);
         return postsPage
                 .get()
-                .map(this::toDto)
+                .map(post -> this.toDto(post, user))
                 .toList();
     }
 
-    public List<PostDto> getPostsFeed(){
+    public List<PostDto> getPostsFeed(HttpServletRequest request){
+        User user = authService.getAuthenticatedUser(request);
         Pageable mostRecentTwentyPosts = PageRequest.of(0, 20, Sort.by("timestamp").descending());
-        Page<Post> postPage = postRepository.findAll(mostRecentTwentyPosts);
+        Page<Post> postPage = postRepository.findPostByAuthorIsIn(user.getFollowed(), mostRecentTwentyPosts);
         return postPage
                 .get()
-                .map(this::toDto)
+                .map(post -> this.toDto(post, user))
                 .toList();
     }
 }

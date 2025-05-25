@@ -20,7 +20,12 @@ public class Post {
     @OnDelete(action=CASCADE)
     private User author;
     private Instant timestamp;
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "post_liked_list",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "liked_list_id")
+    )
     private Set<User> likedList;
 
     public Post(String content, User author) {

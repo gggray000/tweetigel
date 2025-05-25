@@ -1,6 +1,5 @@
 package wtp.tweetigel.tweetigelbackend.controllers;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +28,8 @@ public class PostController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/post",
                  consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void createPost(HttpServletRequest request, @RequestBody PostCreateDto postCreateDto){
+    public void createPost(HttpServletRequest request,
+                           @RequestBody PostCreateDto postCreateDto){
         this.postService.createPost(request, postCreateDto.content());
     }
 
@@ -42,17 +42,26 @@ public class PostController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @PutMapping(value = "/post/{id}/unlike")
+    public void unlikePost(HttpServletRequest request,
+                         @PathVariable("id") long postId){
+        User user = authService.getAuthenticatedUser(request);
+        postService.unlikePost(user, postId);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/posts/{author}",
                 produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PostDto> getPostsList(@PathVariable("author") String username){
-        return postService.getPostsList(username);
+    public List<PostDto> getPostsList(HttpServletRequest request,
+                                      @PathVariable("author") String username){
+        return postService.getPostsList(request, username);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/posts",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PostDto> getPostsFeed(){
-        return postService.getPostsFeed();
+                produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PostDto> getPostsFeed(HttpServletRequest request){
+        return postService.getPostsFeed(request);
     }
 
 

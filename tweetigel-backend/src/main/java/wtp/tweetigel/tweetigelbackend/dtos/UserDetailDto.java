@@ -4,7 +4,7 @@ import java.util.List;
 import java.time.Instant;
 
 // For user profile page
-public record UserDto(String id,
+public record UserDetailDto(String id,
                       String username,
                       Instant registeredAt,
                       List<PostDto> tweets,

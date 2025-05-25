@@ -9,10 +9,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 import wtp.tweetigel.tweetigelbackend.controllers.UserController;
 import wtp.tweetigel.tweetigelbackend.dtos.*;
-import wtp.tweetigel.tweetigelbackend.entities.User;
 import wtp.tweetigel.tweetigelbackend.services.UserService;
 
-import java.net.http.HttpResponse;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,24 +28,24 @@ public class UserControllerTest extends UserControllerTestBase{
     @BeforeEach
     public void beforeEach(){
         UserCreateDto userCreateDto1 = new UserCreateDto("testUser", "test123");
-        controller.registerNewUser(testUser(), userCreateDto1);
+        controller.registerNewUser(userCreateDto1);
     }
 
     @Test
     public void registerUser(){
         UserCreateDto userCreateDto2 = new UserCreateDto("testUser", "test123");
         assertThrows(
-                ResponseStatusException.class, () -> controller.registerNewUser(testUser2(), userCreateDto2)
+                ResponseStatusException.class, () -> controller.registerNewUser(userCreateDto2)
         );
         UserCreateDto userCreateDto3 = new UserCreateDto(" ", "");
         assertThrows(
-                ResponseStatusException.class, () -> controller.registerNewUser(testUserBlank(), userCreateDto3)
+                ResponseStatusException.class, () -> controller.registerNewUser(userCreateDto3)
         );
     }
 
     @Test
     public void userLogin(){
-        UserLoggedDto response = controller.login(testUserLogin());
+        UserInfoConfirmDto response = controller.login(testUserLogin());
         assertEquals("testUser", response.username());
 
         assertThrows(
@@ -73,7 +71,7 @@ public class UserControllerTest extends UserControllerTestBase{
     @Test
     public void follow(){
         UserCreateDto superStarDto = new UserCreateDto("superStar", "test123");
-        controller.registerNewUser(superStar(), superStarDto);
+        controller.registerNewUser(superStarDto);
 
         controller.follow(mockRequestWithSession("testUser"), new UsernameDto("superStar"));
         assertEquals(1, controller.getFollowers(new UsernameDto("superStar")).size());
@@ -93,9 +91,9 @@ public class UserControllerTest extends UserControllerTestBase{
     @Test
     public void unfollow(){
         UserCreateDto superStarDto = new UserCreateDto("superStar", "test123");
-        controller.registerNewUser(superStar(), superStarDto);
+        controller.registerNewUser(superStarDto);
         UserCreateDto superStar2Dto = new UserCreateDto("superStar2", "test123");
-        controller.registerNewUser(superStar2(), superStar2Dto);
+        controller.registerNewUser(superStar2Dto);
 
         UsernameDto superStar = new UsernameDto("superStar");
         UsernameDto superStar2 = new UsernameDto("superStar2");
@@ -125,9 +123,9 @@ public class UserControllerTest extends UserControllerTestBase{
     @Test
     public void searchUsers(){
         UserCreateDto superStarDto = new UserCreateDto("superStar", "test123");
-        controller.registerNewUser(superStar(), superStarDto);
+        controller.registerNewUser(superStarDto);
         UserCreateDto superStar2Dto = new UserCreateDto("superStar2", "test123");
-        controller.registerNewUser(superStar2(), superStar2Dto);
+        controller.registerNewUser(superStar2Dto);
 
         UsernameDto superStar = new UsernameDto("superStar");
         controller.follow(mockRequestWithSession("testUser"), superStar);

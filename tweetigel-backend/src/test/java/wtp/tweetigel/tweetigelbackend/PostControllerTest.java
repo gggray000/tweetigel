@@ -39,7 +39,7 @@ public class PostControllerTest extends PostControllerTestBase {
     @BeforeEach
     public void beforeEach(){
         UserCreateDto userCreateDto1 = new UserCreateDto("testUser", "test123");
-        userController.registerNewUser(testUser(), userCreateDto1);
+        userController.registerNewUser(userCreateDto1);
 
     }
 
@@ -56,7 +56,7 @@ public class PostControllerTest extends PostControllerTestBase {
         postController.createPost(mockRequestWithSession("testUser"), new PostCreateDto("First test post."));
 
         UserCreateDto superStarDto = new UserCreateDto("superStar", "test123");
-        userController.registerNewUser(superStar(), superStarDto);
+        userController.registerNewUser(superStarDto);
         User superStar = userRepository.findByUsername("superStar").get();
         postController.createPost(mockRequestWithSession("superStar"), new PostCreateDto("Random superStar's daily."));
 
@@ -79,10 +79,10 @@ public class PostControllerTest extends PostControllerTestBase {
     public void getPostsList(){
         postController.createPost(mockRequestWithSession("testUser"), new PostCreateDto("First test post."));
         postController.createPost(mockRequestWithSession("testUser"), new PostCreateDto("Second test post."));
-        List<PostDto> postsList = postController.getPostsList("testUser");
+        List<PostDto> postsList = postController.getPostsList(testUser(),"testUser");
         assertEquals(2, postsList.size());
         assertThrows(
-                ResponseStatusException.class, () -> postController.getPostsList("superStar")
+                ResponseStatusException.class, () -> postController.getPostsList(superStar(),"superStar")
         );
     }
 
@@ -92,11 +92,11 @@ public class PostControllerTest extends PostControllerTestBase {
         postController.createPost(mockRequestWithSession("testUser"), new PostCreateDto("Second test post."));
 
         UserCreateDto superStarDto = new UserCreateDto("superStar", "test123");
-        userController.registerNewUser(superStar(), superStarDto);
+        userController.registerNewUser(superStarDto);
         postController.createPost(mockRequestWithSession("superStar"), new PostCreateDto("Random superStar's daily."));
         postController.createPost(mockRequestWithSession("superStar"), new PostCreateDto("Another superStar's daily."));
 
-        List<PostDto> postsList = postController.getPostsFeed();
+        List<PostDto> postsList = postController.getPostsFeed(testUser());
         assertEquals(4, postsList.size());
     }
 
