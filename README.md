@@ -9,5 +9,8 @@
 Return error messages to frontend.
 
 ### Frontend
-1. Custom CSS stylesheet.
-2. Keeping and sending Session to backend. 
+1. Custom CSS stylesheet. 
+2. How to design <code>followButton</code> within <code>TweetFeed</code>
+
+## Extra Feature
+1. Unliking posts.
