@@ -76,12 +76,12 @@ function TweetFeed(){
                                 <div className="grid">
                                     {post.timestamp}
                                     {post.likeable === true?
-                                        <button class="pico-background-pink-450" onClick={() => like(post.id)}>
-                                            Like ♡ {post.likesCount}
+                                        <button className="pico-background-pink-450" onClick={() => like(post.id)}>
+                                            Like ♥ {post.likesCount}
                                         </button>
                                             :post.likeable===false?
                                             <button className="pico-background-zinc-500" onClick={() => unlike(post.id)}>
-                                                Unlike ♥ {post.likesCount}
+                                                Unlike ♡ {post.likesCount}
                                             </button>
                                                 : <></>
                                     }
