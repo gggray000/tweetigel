@@ -2,7 +2,7 @@ import {useContext, useRef, useState} from "react";
 import {API} from "./Context.js";
 import {basic, contentTypeJson} from "./RequestHeaders.js";
 
-function Header({auth, setAuth, username, setUsername, setView, setResult}){
+function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, setViewingUsername}){
     const api = useContext(API)
     const [registering, setRegistering] = useState(false)
     const name = useRef(undefined)
@@ -76,6 +76,11 @@ function Header({auth, setAuth, username, setUsername, setView, setResult}){
         searchTerm.current.value = ""
     }
 
+    function showProfile(username){
+        setView("profile")
+        setViewingUsername(username)
+    }
+
     if(!auth.loggedIn){
         return <>
             <nav>
@@ -112,6 +117,9 @@ function Header({auth, setAuth, username, setUsername, setView, setResult}){
                     <li><button className="pico-background-zinc-500" onClick={logOut}>Log Out</button></li>
                 </ul>
                 <ul>
+                    <li><button className="pico-background-azure-450" onClick={() => showProfile(username)}>Profile</button></li>
+                </ul>
+                <ul>
                     <li>
                         <form role = "search" onSubmit={search}>
                             <input name="search" type="username" placeholder="Username" ref={searchTerm}/>
@@ -125,4 +133,4 @@ function Header({auth, setAuth, username, setUsername, setView, setResult}){
 
 }
 
-export default Header
+export default TweetHeader

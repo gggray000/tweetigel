@@ -1,13 +1,13 @@
 import{API} from "./Context.js";
 import {useContext, useEffect, useState} from "react";
 
-function TweetFeed(){
+function TweetFeed({viewingUsername, setViewingUsername, setView}){
     const api = useContext(API)
     const [feed, setFeed] = useState([])
     const [changed, setChanged] = useState(false)
 
     useEffect(() => {
-        fetch(api + "/posts", {
+        fetch(api + "/posts" + (viewingUsername===null ?"" :"/" + viewingUsername.toString()) , {
             method:"GET",
             credentials: 'include'
         }).then(response => {
@@ -20,7 +20,7 @@ function TweetFeed(){
         }).then(parsedResponse => {
             setFeed(parsedResponse)
         })
-    },[api, changed])
+    },[api, changed, viewingUsername])
 
     function like(id){
         event.preventDefault();
@@ -60,6 +60,11 @@ function TweetFeed(){
         )
     }
 
+    function showProfile(username){
+        setView("profile")
+        setViewingUsername(username)
+    }
+
     if(feed.length === 0){
         return <>
         <h5>The feed is empty.</h5>
@@ -70,7 +75,10 @@ function TweetFeed(){
                 {feed.map(
                     post => (
                         <article key={post.id}>
-                            <header><b>{post.author.username}</b></header>
+                            <header>
+                                <b>{post.author.username}</b>
+                                - <small onClick={() => showProfile(post.author.username)} >profile</small>
+                            </header>
                             {post.content}
                             <footer>
                                 <div className="grid">

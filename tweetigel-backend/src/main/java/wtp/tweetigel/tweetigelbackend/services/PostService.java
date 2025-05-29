@@ -42,9 +42,9 @@ public class PostService {
                 userService.toUsernameDto(post.getAuthor()),
                 formatter.format(post.getTimestamp()),
                 post.getLikedList().size(),
-                post.getLikedList().contains(user)? false
+                post.getLikedList().contains(user)? Boolean.FALSE
                         : post.getAuthor().equals(user)? null
-                            : true
+                            : Boolean.TRUE
         );
     }
 
