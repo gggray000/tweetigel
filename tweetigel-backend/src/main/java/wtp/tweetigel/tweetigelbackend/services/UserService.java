@@ -7,6 +7,9 @@ import wtp.tweetigel.tweetigelbackend.dtos.*;
 import wtp.tweetigel.tweetigelbackend.entities.User;
 import wtp.tweetigel.tweetigelbackend.exceptions.ClientErrors;
 import wtp.tweetigel.tweetigelbackend.repositories.UserRepository;
+
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -38,6 +41,22 @@ public class UserService {
         return new User(
                 userCreateDto.username(),
                 authService.hashPassword(userCreateDto.password())
+        );
+    }
+
+    public UserProfileDto toUserProfileDto(User user){
+        DateTimeFormatter formatter = DateTimeFormatter
+                                        .ofPattern("yyyy.MM.dd")
+                                        .withZone(ZoneId.systemDefault());
+        return new UserProfileDto(
+                user.getId(),
+                user.getUsername(),
+                formatter.format(user.getRegisteredAt()),
+                user.getFollowed().size(),
+                user.getFollowers().size(),
+                user.getFullName(),
+                user.getEmail(),
+                user.getBiography()
         );
     }
 
@@ -136,4 +155,21 @@ public class UserService {
         userRepository.save(user);
         return toUserInfoConfirmDto(user);
     }
+
+    public UserProfileDto getUserProfile(String username){
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(ClientErrors::userNotFound);
+        return toUserProfileDto(user);
+    }
+
+    public UserProfileDto updateUserProfile(HttpServletRequest request,
+                                            UserProfileUpdateDto userProfileUpdateDto){
+        User user = authService.getAuthenticatedUser(request);
+        user.setFullName(userProfileUpdateDto.fullName());
+        user.setEmail(userProfileUpdateDto.email());
+        user.setBiography(userProfileUpdateDto.biography());
+        userRepository.save(user);
+        return toUserProfileDto(user);
+    }
+
 }

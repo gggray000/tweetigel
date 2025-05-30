@@ -77,8 +77,8 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
     }
 
     function showProfile(username){
-        setView("profile")
         setViewingUsername(username)
+        setView("profile")
     }
 
     if(!auth.loggedIn){
@@ -99,8 +99,8 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
                             <input name="username" type="username" placeholder="username" ref={name}/>
                             <input name="password" type="password" placeholder="Password" ref={password}/>
                             {registering
-                                ? <input type="submit" value="Register"/>
-                                : <input type="submit" value="Log in"/>
+                                ? <input className="pico-background-azure-450" type="submit" value="Register"/>
+                                : <input className="pico-background-azure-450" type="submit" value="Log in"/>
                             }
                         </fieldset>
                     </form>
@@ -112,18 +112,14 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
             <nav>
                 <ul>
                     <li><label><small>Logged in as {username}</small></label></li>
-                </ul>
-                <ul>
                     <li><button className="pico-background-zinc-500" onClick={logOut}>Log Out</button></li>
-                </ul>
-                <ul>
                     <li><button className="pico-background-azure-450" onClick={() => showProfile(username)}>Profile</button></li>
-                </ul>
-                <ul>
                     <li>
-                        <form role = "search" onSubmit={search}>
-                            <input name="search" type="username" placeholder="Username" ref={searchTerm}/>
-                            <input type="submit" value="Search"/>
+                        <form onSubmit={search}>
+                            <fieldset role="group">
+                                <input type="text" name="username" placeholder="Username" ref={searchTerm}/>
+                                <input className="pico-background-azure-450" type="submit" value="Search"/>
+                            </fieldset>
                         </form>
                     </li>
                 </ul>

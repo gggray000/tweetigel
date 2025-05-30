@@ -107,5 +107,25 @@ public class UserController {
         return userService.changePassword(userCreateDto);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(
+            value="/getProfile/{username}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public UserProfileDto getUserProfile(@PathVariable("username") String username){
+        return userService.getUserProfile(username);
+    }
+
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PutMapping(
+            value="/updateProfile",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public UserProfileDto updateUserProfile(HttpServletRequest request,
+                                            @RequestBody UserProfileUpdateDto userProfileUpdateDto){
+        return userService.updateUserProfile(request, userProfileUpdateDto);
+    }
+
 }
 

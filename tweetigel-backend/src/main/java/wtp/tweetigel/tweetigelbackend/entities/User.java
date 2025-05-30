@@ -31,6 +31,9 @@ public class User {
     private Set<User> followed;
     @ManyToMany(mappedBy = "followed", fetch = FetchType.EAGER)
     private Set<User> followers;
+    private String fullName;
+    private String email;
+    private String biography;
 
     public User(String username, String hashedPassword) {
         this.username = username;
@@ -95,6 +98,30 @@ public class User {
 
     public void setFollowers(Set<User> followers) {
         this.followers = followers;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getBiography() {
+        return biography;
+    }
+
+    public void setBiography(String biography) {
+        this.biography = biography;
     }
 
     @Override

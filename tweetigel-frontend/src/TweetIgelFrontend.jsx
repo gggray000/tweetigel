@@ -44,7 +44,7 @@ function TweetIgelFrontend(){
                         </div>
                         : view === "profile" ?
                             <div>
-                                <UserProfile viewingUsername={viewingUsername} setViewingUsername={setViewingUsername} setView={setView}/>
+                                <UserProfile username={username} viewingUsername={viewingUsername} setViewingUsername={setViewingUsername} setView={setView}/>
                             </div>
                             :<>
                             </>
