@@ -14,4 +14,6 @@ Return error messages to frontend.
 
 ## Extra Feature
 1. Unliking posts.
-2. User profile (in progress).
+2. Managing one's own user profile.
+3. Displaying user profile of another user.
+4. Pagination of post feeds (to be tested).
