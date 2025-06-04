@@ -1,5 +1,4 @@
 import TweetHeader from "./TweetHeader.jsx";
-import TweetFeed from "./TweetFeed.jsx";
 import {useState} from "react";
 import TweetEditor from "./TweetEditor.jsx";
 import SearchResultView from "./SearchResultView.jsx";
@@ -25,7 +24,7 @@ function TweetIgelFrontend(){
             <main>
                 {view === "loggedOut"
                     ? <div>
-                        <h3>Welcome to TweetIgel!</h3>
+                        <h3>Welcome to <p class="pico-color-pumpkin-700">TweetIgel</p></h3>
                         <h5><i>Please log in or register to continue.</i></h5>
                         <img src="/tweetigel_logo.png" width="100" alt="Logo"/>
                     </div>
