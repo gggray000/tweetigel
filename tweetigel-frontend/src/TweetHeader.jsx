@@ -112,7 +112,7 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
             <nav>
                 <ul>
                     <li><label><small>Logged in as {username}</small></label></li>
-                    <li><button className="pico-background-zinc-500" onClick={logOut}>Log Out</button></li>
+                    <li><button className="pico-background-azure-50" onClick={logOut}>Log Out</button></li>
                     <li><button className="pico-background-azure-450" onClick={() => showProfile(username)}>Profile</button></li>
                     <li>
                         <form onSubmit={search}>

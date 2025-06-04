@@ -4,6 +4,7 @@ import {useState} from "react";
 import TweetEditor from "./TweetEditor.jsx";
 import SearchResultView from "./SearchResultView.jsx";
 import UserProfile from "./UserProfile.jsx";
+import TweetFeedWithPagination from "./TweetFeedWithPagination..jsx";
 
 function TweetIgelFrontend(){
     const [auth, setAuth] = useState({username:null, password: null, loggedIn: false});
@@ -13,48 +14,49 @@ function TweetIgelFrontend(){
     const [viewingUsername, setViewingUsername] = useState()
 
     return <>
-        <header>
-            <TweetHeader auth={auth} setAuth={setAuth}
-                         username={username} setUsername={setUsername}
-                         setView={setView}
-                         setResult={setResult}
-                         setViewingUsername={setViewingUsername} />
-        </header>
-        <hr />
-        <main>
-            {view === "loggedOut"
-                ?<div>
-                    <h3>Welcome to TweetIgel!</h3>
-                    <h5><i>Please log in or register to continue.</i></h5>
-                    <img src="/tweetigel_logo.png" width="100" alt="Logo"/>
-                </div>
-                : view === "loggedIn" ?
-                    <div>
-                        <h3>
-                            <img src="/tweetigel_logo.png" width="100" alt="Logo"/>
-                            Hi, {username}!
-                        </h3>
-                        <TweetEditor></TweetEditor>
-                        <h4>What's new</h4>
-                        <TweetFeed viewingUsername={null} setViewingUsername={setViewingUsername} setView={setView}></TweetFeed>
+            <header>
+                <TweetHeader auth={auth} setAuth={setAuth}
+                             username={username} setUsername={setUsername}
+                             setView={setView}
+                             setResult={setResult}
+                             setViewingUsername={setViewingUsername}/>
+            </header>
+            <hr/>
+            <main>
+                {view === "loggedOut"
+                    ? <div>
+                        <h3>Welcome to TweetIgel!</h3>
+                        <h5><i>Please log in or register to continue.</i></h5>
+                        <img src="/tweetigel_logo.png" width="100" alt="Logo"/>
                     </div>
-                    : view === "search" ?
+                    : view === "loggedIn" ?
                         <div>
-                            <SearchResultView result={result} setResult={setResult} setView={setView} auth={auth} />
+                            <h3>
+                                <img src="/tweetigel_logo.png" width="100" alt="Logo"/>
+                                Hi, {username}!
+                            </h3>
+                            <TweetEditor></TweetEditor>
+                            <h4>What's new</h4>
+                            <TweetFeedWithPagination viewingUsername={null} setViewingUsername={setViewingUsername}
+                                       setView={setView}></TweetFeedWithPagination>
                         </div>
-                        : view === "profile" ?
+                        : view === "search" ?
                             <div>
-                                <UserProfile username={username} viewingUsername={viewingUsername} setViewingUsername={setViewingUsername} setView={setView}/>
+                                <SearchResultView result={result} setResult={setResult} setView={setView} auth={auth}/>
                             </div>
-                            :<>
-                            </>
-            }
-        </main>
-        <hr />
-        <footer>
-            <i><small>TweetIgel - SoSe2025 - Coursework for "Web Technology Project" By R.Gan</small></i>
-        </footer>
-
+                            : view === "profile" ?
+                                <div>
+                                    <UserProfile username={username} viewingUsername={viewingUsername}
+                                                 setViewingUsername={setViewingUsername} setView={setView}/>
+                                </div>
+                                : <>
+                                </>
+                }
+            </main>
+            <hr/>
+            <footer>
+                <i><small>TweetIgel - SoSe2025 - Coursework for "Web Technology Project" By R.Gan</small></i>
+            </footer>
     </>
 }
 

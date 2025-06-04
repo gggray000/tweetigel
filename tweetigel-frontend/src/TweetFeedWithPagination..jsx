@@ -1,15 +1,17 @@
 import{API} from "./Context.js";
 import {useContext, useEffect, useState} from "react";
 
-function TweetFeed({viewingUsername, setViewingUsername, setView}){
+function TweetFeedWithPagination({viewingUsername, setViewingUsername, setView}){
     const api = useContext(API)
     const [feed, setFeed] = useState([])
     const [changed, setChanged] = useState(false)
+    const [pageNum, setPageNum] = useState(0)
+    const [maxPageNum, setMaxPageNum] = useState(1)
 
     // api+"/user/search?term=" + searchTerm.current.value,
 
     useEffect(() => {
-        fetch(api + "/posts" + (viewingUsername===null ?"" :"/" + viewingUsername.toString()) , {
+        fetch(api + "/postsPage" + (viewingUsername===null ?"" :"/" + viewingUsername.toString()) + "?" + "page=" + pageNum.toString(), {
             method:"GET",
             credentials: 'include'
         }).then(response => {
@@ -21,8 +23,21 @@ function TweetFeed({viewingUsername, setViewingUsername, setView}){
             }
         }).then(parsedResponse => {
             setFeed(parsedResponse)
+        }).then(() => {
+                fetch(api + "/postsCount" + (viewingUsername===null ?"" :"/" + viewingUsername.toString()), {
+                    method:"GET",
+                    credentials: 'include'
+                }).then(response => {
+                    if(!response.ok){
+                        alert(response.statusText)
+                    } else {
+                        return response.json()
+                    }
+                }).then(count => {
+                    setMaxPageNum(Math.floor(count / 20))
+                })
         })
-    },[api, changed, viewingUsername])
+    },[api, changed, pageNum, viewingUsername])
 
     function like(id){
         event.preventDefault();
@@ -67,12 +82,34 @@ function TweetFeed({viewingUsername, setViewingUsername, setView}){
         setViewingUsername(username)
     }
 
+    function lastPage(){
+        if(pageNum > 0){
+            setPageNum(pageNum-1)
+        }
+        else{
+            alert("Already at the first page.")
+        }
+    }
+
+    function nextPage(){
+        if(pageNum < maxPageNum){
+            setPageNum(pageNum + 1)
+        }
+        else{
+            alert("Already at the last page.")
+        }
+    }
+
     if(feed.length === 0){
         return <>
-        <h5>The feed is empty.</h5>
+            <h5>The feed is empty.</h5>
         </>
     }else{
         return <>
+            <div role="group">
+                <button className="pico-background-azure-50" onClick={lastPage}>❮ Last Page</button>
+                <button className="pico-background-azure-50" onClick={nextPage}>Next Page ❯</button>
+            </div>
             <ul>
                 {feed.map(
                     post => (
@@ -89,11 +126,11 @@ function TweetFeed({viewingUsername, setViewingUsername, setView}){
                                         <button className="pico-background-pink-450" onClick={() => like(post.id)}>
                                             Like ♥ {post.likesCount}
                                         </button>
-                                            :post.likeable===false?
+                                        :post.likeable===false?
                                             <button className="pico-background-zinc-500" onClick={() => unlike(post.id)}>
                                                 Unlike ♡ {post.likesCount}
                                             </button>
-                                                : <></>
+                                            : <></>
                                     }
                                 </div>
 
@@ -106,4 +143,4 @@ function TweetFeed({viewingUsername, setViewingUsername, setView}){
     }
 }
 
-export default TweetFeed
+export default TweetFeedWithPagination

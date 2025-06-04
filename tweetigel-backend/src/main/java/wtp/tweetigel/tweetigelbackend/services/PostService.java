@@ -14,6 +14,7 @@ import wtp.tweetigel.tweetigelbackend.exceptions.ClientErrors;
 import wtp.tweetigel.tweetigelbackend.repositories.PostRepository;
 
 
+import java.net.http.HttpRequest;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -72,6 +73,7 @@ public class PostService {
         postRepository.save(post);
     }
 
+    // TODO: deprecate
     public List<PostDto> getPostsList(HttpServletRequest request, String username){
         User user = authService.getAuthenticatedUser(request);
         User toBeViewed = userService.getUser(username);
@@ -83,13 +85,29 @@ public class PostService {
                 .toList();
     }
 
+    // TODO: deprecate
     public List<PostDto> getPostsFeed(HttpServletRequest request){
         User user = authService.getAuthenticatedUser(request);
         Pageable mostRecentTwentyPosts = PageRequest.of(0, 20, Sort.by("timestamp").descending());
-        Page<Post> postPage = postRepository.findPostByAuthorIsIn(user.getFollowed(), mostRecentTwentyPosts);
+        Page<Post> postsFeed = postRepository.findPostByAuthorIsIn(user.getFollowed(), mostRecentTwentyPosts);
+        return postsFeed
+                .get()
+                .map(post -> this.toDto(post, user))
+                .toList();
+    }
+
+    public List<PostDto> getPostsPage(HttpServletRequest request, int num){
+        User user = authService.getAuthenticatedUser(request);
+        Pageable pageWithTwentyPosts = PageRequest.of(num, 20, Sort.by("timestamp").descending());
+        Page<Post> postPage = postRepository.findPostByAuthorIsIn(user.getFollowed(), pageWithTwentyPosts);
         return postPage
                 .get()
                 .map(post -> this.toDto(post, user))
                 .toList();
+    }
+
+    public int getPostsCount(HttpServletRequest request){
+        User user = authService.getAuthenticatedUser(request);
+        return postRepository.countPostByAuthorIsIn(user.getFollowed());
     }
 }

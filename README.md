@@ -16,4 +16,4 @@ Improve error messages display at frontend.
 1. Unliking posts.
 2. Managing one's own user profile.
 3. Displaying user profile of another user.
-4. Pagination of post feeds (todo: update PostController and PostService, implement new frontend state hook and components).
+4. Presenting the timelines of posts as a paginated view.
