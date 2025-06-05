@@ -3,14 +3,10 @@
 
 <img src="tweetigel-frontend/public/tweetigel_logo.png" alt="Tweetigel Logo" width="100"/>
 
-## Problems
-
-### Backend
-Improve error messages display at frontend.
-
-### Frontend
-1. Custom CSS stylesheet for responsive layout?
-2. How to design reusable <code>followButton</code> that's not limited to search result page?
+## TODOs
+1. Inspect code base in detail.
+2. Deployment.
+3. Increase test coverage.
 
 ## Extra Feature
 1. Unliking posts.
