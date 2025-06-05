@@ -35,7 +35,7 @@ public class PostService {
     }
 
     private PostDto toDto(Post post, User user){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss").withZone(ZoneId.systemDefault());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm").withZone(ZoneId.systemDefault());
 
         return new PostDto(
                 post.getId(),

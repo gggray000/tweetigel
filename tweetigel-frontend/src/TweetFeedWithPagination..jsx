@@ -116,7 +116,7 @@ function TweetFeedWithPagination({viewingUsername, setViewingUsername, setView})
                         <article key={post.id}>
                             <header>
                                 <b>{post.author.username}</b>
-                                - <small onClick={() => showProfile(post.author.username)} >profile</small>
+                                <a href="#" onClick={() => showProfile(post.author.username)} > <sub><i>    info</i></sub></a>
                             </header>
                             {post.content}
                             <footer>

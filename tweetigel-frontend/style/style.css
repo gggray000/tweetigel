@@ -1,0 +1,74 @@
+[role=group] {
+    display: inline-flex;
+    position: relative;
+    width: 100%;
+    margin-bottom: 0;
+    border-radius: var(--pico-border-radius);
+    box-shadow: var(--pico-group-box-shadow, 0 0 0 rgba(0, 0, 0, 0));
+    vertical-align: middle;
+    transition: box-shadow var(--pico-transition);
+}
+
+nav > ul > div {
+    display: flex;
+}
+
+article {
+    background-color: #ffffff;
+    margin-top: 30px
+}
+
+article > header {
+    border-bottom: none;
+}
+
+article > header,
+article > footer {
+    background-color:  #ffffff;
+}
+
+article > footer > .grid {
+    align-items: center;
+    grid-template-columns: 2fr auto;
+}
+
+article > footer > .grid > button{
+    max-width: 100%;
+}
+
+@media (max-width: 768px) {
+
+    nav > ul > div {
+        display: block;
+    }
+
+    .editor-container {
+        display: flex;
+        align-items: center;
+    }
+
+    article {
+        background-color: #ffffff;
+        margin-top: 20px
+    }
+
+    article > header,
+    article > footer {
+        background-color:  #ffffff;
+    }
+
+    article > header {
+        border-bottom: none;
+    }
+
+    article > footer > .grid {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    article > footer > .grid > button{
+        max-width: 50%;
+    }
+
+}

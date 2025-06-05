@@ -35,28 +35,32 @@ function TweetEditor(){
 
     if (posted){
         return <>
-            <ul>
-             <textarea
-                 name="posted"
-                 aria-invalid="false"
-                 aria-describedby="posted-helper"
-                 placeholder="Enter content here." ref={content}></textarea>
-                <small id="posted-helper">Posted successfully!</small>
-            </ul>
-            <ul>
-                <button className="pico-background-jade-350" onClick={createPost}>Post</button>
-            </ul>
+            <div className="editor-container">
+                <ul>
+                 <textarea
+                     name="posted"
+                     aria-invalid="false"
+                     aria-describedby="posted-helper"
+                     placeholder="Enter content here." ref={content}></textarea>
+                        <small id="posted-helper">Posted successfully!</small>
+                </ul>
+                <ul>
+                    <button className="pico-background-jade-350" onClick={createPost}>Post</button>
+                </ul>
+            </div>
         </>
     } else {
         return <>
-            <ul>
-                <textarea placeholder="Enter content here." ref={content}></textarea>
-            </ul>
-            <ul>
-                <button className="pico-background-jade-350" onClick={createPost}>Post!</button>
-            </ul>
-        </>
+            <div className="editor-container">
+                <ul>
+                    <textarea placeholder="Enter content here." ref={content}></textarea>
+                </ul>
+                <ul>
+                    <button className="pico-background-jade-350" onClick={createPost}>Post!</button>
+                </ul>
+            </div>
 
+        </>
     }
 
 }

@@ -112,17 +112,23 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
         return <>
             <nav>
                 <ul>
-                    <li><label><small>Logged in as {username}</small></label></li>
-                    <li><button className="pico-background-azure-50" onClick={logOut}>Log Out</button></li>
-                    <li><button className="pico-background-azure-450" onClick={() => showProfile(username)}>Profile</button></li>
-                    <li>
-                        <form onSubmit={search}>
-                            <fieldset role="group">
-                                <input type="text" name="username" placeholder="Find someone..." ref={searchTerm}/>
-                                <input className="pico-background-azure-450" type="submit" value="Search"/>
-                            </fieldset>
-                        </form>
-                    </li>
+                    <div>
+                        <div>
+                            <li><label><small>Logged in as {username}</small></label></li>
+                            <li><button className="pico-background-azure-50" onClick={logOut}>Log Out</button></li>
+                            <li><button className="pico-background-azure-450" onClick={() => showProfile(username)}>Profile</button></li>
+                        </div>
+                        <div>
+                            <li>
+                                <form onSubmit={search}>
+                                    <fieldset role="group">
+                                        <input type="text" name="username" placeholder="Find someone..." ref={searchTerm}/>
+                                        <input className="pico-background-azure-450" type="submit" value="Search"/>
+                                    </fieldset>
+                                </form>
+                            </li>
+                        </div>
+                    </div>
                 </ul>
             </nav>
         </>
