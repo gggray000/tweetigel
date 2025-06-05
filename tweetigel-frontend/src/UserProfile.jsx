@@ -1,7 +1,7 @@
 import {useContext, useEffect, useRef, useState} from "react";
 import {API} from "./Context.js";
-import TweetFeed from "./TweetFeed.jsx";
 import {contentTypeJson} from "./RequestHeaders.js";
+import TweetFeedWithPagination from "./TweetFeedWithPagination..jsx";
 
 function UserProfile({ username, viewingUsername, setViewingUsername, setView}){
     const api = useContext(API)
@@ -18,7 +18,7 @@ function UserProfile({ username, viewingUsername, setViewingUsername, setView}){
             credentials: 'include'
         }).then(response => {
             if(!response.ok){
-                alert(response.statusText)
+                alert("Unable to load profile: " + response.statusText)
                 return null
             }else{
                 return response.json()
@@ -56,7 +56,7 @@ function UserProfile({ username, viewingUsername, setViewingUsername, setView}){
             credentials: 'include'
         }).then(response => {
             if(!response.ok){
-                alert(response.statusText)
+                alert("Unable to update profile: " + response.statusText)
                 return null
             }else{
                 return response.json()
@@ -74,7 +74,7 @@ function UserProfile({ username, viewingUsername, setViewingUsername, setView}){
         </div>
         <br />
         <div>
-            <h3>User Profile - {viewingUsername}</h3>
+            <h3>{viewingUsername}</h3>
         </div>
 
         <div>
@@ -84,6 +84,7 @@ function UserProfile({ username, viewingUsername, setViewingUsername, setView}){
         </div>
         <hr />
 
+        <h5>About me</h5>
         {editable === true && editing === false
             ?<div>
                 <details name="full name" open>
@@ -109,7 +110,6 @@ function UserProfile({ username, viewingUsername, setViewingUsername, setView}){
                                 Full Name
                                 <input
                                     name="fullName"
-                                    placeholder="Full Name"
                                     ref = {fullName}
                                     defaultValue={profile.fullName || ""}/>
                             </label>
@@ -118,7 +118,6 @@ function UserProfile({ username, viewingUsername, setViewingUsername, setView}){
                                 <input
                                     type="email"
                                     name="email"
-                                    placeholder="Email"
                                     autoComplete="email"
                                     ref = {email}
                                     defaultValue={profile.email || ""}/>
@@ -156,7 +155,7 @@ function UserProfile({ username, viewingUsername, setViewingUsername, setView}){
                     </div>
         }
         <h3>Posts</h3>
-        <TweetFeed viewingUsername={viewingUsername} />
+        <TweetFeedWithPagination viewingUsername={viewingUsername} />
     </>
 
 }

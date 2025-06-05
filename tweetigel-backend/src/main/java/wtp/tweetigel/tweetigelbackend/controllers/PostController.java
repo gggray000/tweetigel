@@ -53,31 +53,32 @@ public class PostController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/posts/{author}",
                 produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PostDto> getPostsList(HttpServletRequest request,
-                                      @PathVariable("author") String username){
-        return postService.getPostsList(request, username);
+    public List<PostDto> getPostsForProfile(HttpServletRequest request,
+                                      @PathVariable("author") String username,
+                                      @RequestParam("page") int num){
+        return postService.getPostsForProfile(request, username, num);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/postsCount/{user}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public int getPostsCountForProfile(@PathVariable("user") String username){
+        return postService.getPostsCountForProfile(username);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/posts",
                 produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PostDto> getPostsFeed(HttpServletRequest request){
-        return postService.getPostsFeed(request);
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/postsPage",
-                produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PostDto> getPostsPage(HttpServletRequest request,
+    public List<PostDto> getPostsFeed(HttpServletRequest request,
                                           @RequestParam("page") int num){
-        return postService.getPostsPage(request, num);
+        return postService.getPostsFeed(request, num);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/postsCount",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public int getPostsCount(HttpServletRequest request){
-        return postService.getPostsCount(request);
+    public int getPostsCountForFeed(HttpServletRequest request){
+        return postService.getPostsCountForFeed(request);
     }
 
 }

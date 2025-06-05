@@ -11,12 +11,12 @@ function TweetFeedWithPagination({viewingUsername, setViewingUsername, setView})
     // api+"/user/search?term=" + searchTerm.current.value,
 
     useEffect(() => {
-        fetch(api + "/postsPage" + (viewingUsername===null ?"" :"/" + viewingUsername.toString()) + "?" + "page=" + pageNum.toString(), {
+        fetch(api + "/posts" + (viewingUsername===null ?"" :"/" + viewingUsername.toString()) + "?" + "page=" + pageNum.toString(), {
             method:"GET",
             credentials: 'include'
         }).then(response => {
             if(!response.ok){
-                alert(response.statusText)
+                alert("Unable to load posts list: " + response.statusText)
                 return []
             }else{
                 return response.json()
@@ -29,7 +29,7 @@ function TweetFeedWithPagination({viewingUsername, setViewingUsername, setView})
                     credentials: 'include'
                 }).then(response => {
                     if(!response.ok){
-                        alert(response.statusText)
+                        alert("Unable to get post count: " + response.statusText)
                     } else {
                         return response.json()
                     }
@@ -46,7 +46,7 @@ function TweetFeedWithPagination({viewingUsername, setViewingUsername, setView})
             credentials: 'include'
         }).then(response => {
                 if (!response.ok) {
-                    alert(response.statusText)
+                    alert("Unable to like the post: " + response.statusText)
                 } else {
                     const newFeed = feed.slice();
                     const index = feed.findIndex(post => post.id === id)
@@ -65,7 +65,7 @@ function TweetFeedWithPagination({viewingUsername, setViewingUsername, setView})
             credentials: 'include'
         }).then(response => {
                 if (!response.ok) {
-                    alert(response.statusText)
+                    alert("Unable to unlike the post: " + response.statusText)
                 } else {
                     const newFeed = feed.slice();
                     const index = feed.findIndex(post => post.id === id)

@@ -15,7 +15,7 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
             credentials: 'include'
         })
             .then(response => {
-                if(!response.ok) alert(response.statusText);
+                if(!response.ok) alert("Unable to log out: " + response.statusText);
             }).then(() => {
                 setAuth({name:null, password:null, loggedIn: false})
                 setView("loggedOut")
@@ -51,7 +51,6 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
                 if(!response.ok) {
                     alert("Register Failed.");
                 }else{
-                    alert("Successfully registered!")
                     setRegistering(false)
                 }
         })
@@ -87,7 +86,9 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
                 <ul>
                     <li>
                     <label htmlFor="new-account"><small>
-                        <input id="new-account" type="checkbox" defaultValue={registering}
+                        <input id="new-account"
+                               type="checkbox"
+                               defaultValue={registering}
                                onChange={e => setRegistering(e.target.checked)}/>
                         Create an new account</small>
                     </label>
@@ -98,15 +99,15 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
                         <fieldset role="group">
                             <input name="username" type="username" placeholder="username" ref={name}/>
                             <input name="password" type="password" placeholder="Password" ref={password}/>
-                            {registering
-                                ? <input className="pico-background-azure-450" type="submit" value="Register"/>
-                                : <input className="pico-background-azure-450" type="submit" value="Log in"/>
-                            }
+                        {registering
+                            ? <input className="pico-background-azure-450" type="submit" value="Register"/>
+                            : <input className="pico-background-azure-450" type="submit" value="Log in"/>
+                        }
                         </fieldset>
-                    </form>
-                </ul>
-            </nav>
-        </>
+                </form>
+            </ul>
+        </nav>
+    </>
     } else {
         return <>
             <nav>
@@ -117,7 +118,7 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
                     <li>
                         <form onSubmit={search}>
                             <fieldset role="group">
-                                <input type="text" name="username" placeholder="Username" ref={searchTerm}/>
+                                <input type="text" name="username" placeholder="Find someone..." ref={searchTerm}/>
                                 <input className="pico-background-azure-450" type="submit" value="Search"/>
                             </fieldset>
                         </form>
@@ -126,7 +127,6 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
             </nav>
         </>
     }
-
 }
 
 export default TweetHeader

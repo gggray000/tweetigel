@@ -1,10 +1,15 @@
-import {useContext, useRef} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import {API} from "./Context.js";
 import {contentTypeJson} from "./RequestHeaders.js";
 
 function TweetEditor(){
     const api = useContext(API)
     const content = useRef(undefined)
+    const [posted, setPosted] = useState(false)
+
+    useEffect(() => {
+        setPosted(false)
+    }, [])
 
     function createPost(){
         event.preventDefault();
@@ -20,22 +25,40 @@ function TweetEditor(){
             credentials: 'include'
         }).then(response => {
                 if(!response.ok){
-                    alert("Post Failed.");
+                    alert("Unable to launch post.");
                 }else{
-                    alert("Post successfully!")
                     content.current.value=""
+                    setPosted(true)
                 }
         })
     }
 
-    return <>
-        <ul>
-            <textarea placeholder="Enter content here." ref={content}></textarea>
-        </ul>
-        <ul>
-            <button className="pico-background-jade-350" onClick={createPost}>Post!</button>
-        </ul>
-    </>
+    if (posted){
+        return <>
+            <ul>
+             <textarea
+                 name="posted"
+                 aria-invalid="false"
+                 aria-describedby="posted-helper"
+                 placeholder="Enter content here." ref={content}></textarea>
+                <small id="posted-helper">Posted successfully!</small>
+            </ul>
+            <ul>
+                <button className="pico-background-jade-350" onClick={createPost}>Post</button>
+            </ul>
+        </>
+    } else {
+        return <>
+            <ul>
+                <textarea placeholder="Enter content here." ref={content}></textarea>
+            </ul>
+            <ul>
+                <button className="pico-background-jade-350" onClick={createPost}>Post!</button>
+            </ul>
+        </>
+
+    }
+
 }
 
 export default TweetEditor

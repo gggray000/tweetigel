@@ -17,6 +17,7 @@ public interface PostRepository extends CrudRepository<Post, String> {
     List<Post> findByAuthor(User author);
     Optional<Post> findById(long id);
     Page<Post> findPostsByAuthorOrderByTimestampDesc(User author, Pageable pageable);
+    int countPostByAuthor(User author);
     Page<Post> findPostByAuthorIsIn(Collection<User> authors, Pageable pageable);
     int countPostByAuthorIsIn(Collection<User> authors);
 

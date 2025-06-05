@@ -73,11 +73,10 @@ public class PostService {
         postRepository.save(post);
     }
 
-    // TODO: deprecate
-    public List<PostDto> getPostsList(HttpServletRequest request, String username){
+    public List<PostDto> getPostsForProfile(HttpServletRequest request, String username, int num){
         User user = authService.getAuthenticatedUser(request);
         User toBeViewed = userService.getUser(username);
-        Pageable mostRecentTwentyPosts = PageRequest.of(0,20);
+        Pageable mostRecentTwentyPosts = PageRequest.of(num,20);
         Page<Post> postsPage = postRepository.findPostsByAuthorOrderByTimestampDesc(toBeViewed, mostRecentTwentyPosts);
         return postsPage
                 .get()
@@ -85,18 +84,12 @@ public class PostService {
                 .toList();
     }
 
-    // TODO: deprecate
-    public List<PostDto> getPostsFeed(HttpServletRequest request){
-        User user = authService.getAuthenticatedUser(request);
-        Pageable mostRecentTwentyPosts = PageRequest.of(0, 20, Sort.by("timestamp").descending());
-        Page<Post> postsFeed = postRepository.findPostByAuthorIsIn(user.getFollowed(), mostRecentTwentyPosts);
-        return postsFeed
-                .get()
-                .map(post -> this.toDto(post, user))
-                .toList();
+    public int getPostsCountForProfile(String username){
+        User toBeViewed = userService.getUser(username);
+        return postRepository.countPostByAuthor(toBeViewed);
     }
 
-    public List<PostDto> getPostsPage(HttpServletRequest request, int num){
+    public List<PostDto> getPostsFeed(HttpServletRequest request, int num){
         User user = authService.getAuthenticatedUser(request);
         Pageable pageWithTwentyPosts = PageRequest.of(num, 20, Sort.by("timestamp").descending());
         Page<Post> postPage = postRepository.findPostByAuthorIsIn(user.getFollowed(), pageWithTwentyPosts);
@@ -106,7 +99,7 @@ public class PostService {
                 .toList();
     }
 
-    public int getPostsCount(HttpServletRequest request){
+    public int getPostsCountForFeed(HttpServletRequest request){
         User user = authService.getAuthenticatedUser(request);
         return postRepository.countPostByAuthorIsIn(user.getFollowed());
     }
