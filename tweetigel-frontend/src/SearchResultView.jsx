@@ -17,7 +17,6 @@ function SearchResultView({result, setResult, setView, setViewingUsername}){
                 <h3>No user found.</h3>
                 <input type="button" value="Go Back to Feed" onClick={goBack}/>
             </div>
-
         </>
     } else{
         return <>
@@ -32,7 +31,6 @@ function SearchResultView({result, setResult, setView, setViewingUsername}){
                         <th scope="col"><h5>Followed</h5></th>
                         <th scope="col"><h5>Action</h5></th>
                     </tr>
-
                 </thead>
                 <tbody>
                 {result.map(user => (

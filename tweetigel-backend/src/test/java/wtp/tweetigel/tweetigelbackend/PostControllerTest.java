@@ -67,12 +67,38 @@ public class PostControllerTest extends PostControllerTestBase {
 
         postController.likePost(mockRequestWithSession("testUser"), starPost.getId());
         assertThrows(
-                ResponseStatusException.class, () -> postController.likePost(mockRequestWithSession("testUser"), starPost.getId())
+                ResponseStatusException.class, () ->
+                        postController.likePost(mockRequestWithSession("testUser"), starPost.getId())
         );
         assertThrows(
-                ResponseStatusException.class, () -> postController.likePost(mockRequestWithSession("testUser"), userPost.getId())
+                ResponseStatusException.class, () ->
+                        postController.likePost(mockRequestWithSession("testUser"), userPost.getId())
         );
+    }
 
+    @Test
+    public void unlikePost(){
+        User testUser = userRepository.findByUsername("testUser").get();
+
+        UserCreateDto superStarDto = new UserCreateDto("superStar", "test123");
+        userController.registerNewUser(superStarDto);
+        User superStar = userRepository.findByUsername("superStar").get();
+        postController.createPost(mockRequestWithSession("superStar"), new PostCreateDto("Another random superStar's daily."));
+
+        Post starPost = postRepository.findByAuthor(superStar).getFirst();
+        postController.likePost(mockRequestWithSession("testUser"), starPost.getId());
+        assertEquals(1, postRepository.findByAuthor(superStar).getFirst().getLikedList().size());
+
+        postController.unlikePost(mockRequestWithSession("testUser"), starPost.getId());
+        starPost = postRepository.findByAuthor(superStar).getFirst();
+        assertEquals(0, postRepository.findByAuthor(superStar).getFirst().getLikedList().size());
+        assertThrows(
+                ResponseStatusException.class, () ->
+                        postController.unlikePost(
+                                mockRequestWithSession("testUser"),
+                                postRepository.findByAuthor(superStar).getFirst().getId()
+                        )
+        );
     }
 
     @Test
@@ -80,8 +106,9 @@ public class PostControllerTest extends PostControllerTestBase {
         postController.createPost(mockRequestWithSession("testUser"), new PostCreateDto("First test post."));
         postController.createPost(mockRequestWithSession("testUser"), new PostCreateDto("Second test post."));
         List<PostDto> postsList = postController.getPostsForProfile(testUserSession(), "testUser", 0);
-
         assertEquals(2, postsList.size());
+        int postCount = postController.getPostsCountForProfile("testUser");
+        assertEquals(postCount, postsList.size());
         /*assertThrows(
                 ResponseStatusException.class, () -> postController.getPostsFeed(superStar(), 0)
         );*/
@@ -98,6 +125,8 @@ public class PostControllerTest extends PostControllerTestBase {
         userController.follow(testUserSession(), new UsernameDto("superStar"));
         List<PostDto> postsList = postController.getPostsFeed(testUserSession(), 0);
         assertEquals(2, postsList.size());
+        int postCount = postController.getPostsCountForFeed(testUserSession());
+        assertEquals(postCount, postsList.size());
     }
 
 

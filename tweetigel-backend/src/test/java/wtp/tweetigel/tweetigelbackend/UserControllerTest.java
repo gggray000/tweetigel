@@ -141,4 +141,20 @@ public class UserControllerTest extends UserControllerTestBase{
         assertFalse(searchResultDtoList.getFirst().followed());
     }
 
+    @Test
+    public void updateUserProfile(){
+        assertNull(userService.getUser("testUser").getFullName());
+        assertNull(userService.getUser("testUser").getEmail());
+        assertNull(userService.getUser("testUser").getBiography());
+        UserProfileUpdateDto profileUpdateDto = new UserProfileUpdateDto(
+                "Test User",
+                "test@test.de",
+                "I am here to help!"
+        );
+        controller.updateUserProfile(mockRequestWithSession("testUser"), profileUpdateDto);
+        assertEquals("Test User", userService.getUser("testUser").getFullName());
+        assertEquals("test@test.de", userService.getUser("testUser").getEmail());
+        assertEquals("I am here to help!", userService.getUser("testUser").getBiography());
+    }
+
 }
