@@ -41,7 +41,7 @@ function TweetIgelFrontend(){
                         </div>
                         : view === "search" ?
                             <div>
-                                <SearchResultView result={result} setResult={setResult} setView={setView} auth={auth}/>
+                                <SearchResultView result={result} setResult={setResult} setView={setView} auth={auth} setViewingUsername={setViewingUsername}/>
                             </div>
                             : view === "profile" ?
                                 <div>

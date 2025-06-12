@@ -70,7 +70,7 @@ public class PostController {
     @GetMapping(value = "/posts",
                 produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PostDto> getPostsFeed(HttpServletRequest request,
-                                          @RequestParam("page") int num){
+                                      @RequestParam("page") int num){
         return postService.getPostsFeed(request, num);
     }
 

@@ -19,6 +19,10 @@ public abstract class PostControllerTestBase {
 
     protected HttpServletRequest testUser(){ return mockRequest("testUser", "test123"); }
 
+    protected HttpServletRequest testUserSession(){ return mockRequestWithSession("testUser"); };
+
     protected HttpServletRequest superStar() { return mockRequest("superStar", "test123"); }
+
+    protected HttpServletRequest superStarSession(){ return mockRequestWithSession("superStar"); };
 
 }
