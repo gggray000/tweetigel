@@ -106,9 +106,9 @@ public class UserService {
         User toBeUnfollowed = userRepository.findByUsername(usernameDto.username())
                 .orElseThrow(ClientErrors::userNotFound);
         if(follower.equals(toBeUnfollowed)){
-            throw ClientErrors.invalidFollowRequest();
+            throw ClientErrors.invalidUnfollowRequest();
         }
-            // if the element doesn't exist, remove() won't change anything
+        // if the element doesn't exist, remove() won't change anything
         follower.getFollowed().remove(toBeUnfollowed);
         userRepository.save(follower);
         toBeUnfollowed.getFollowers().remove(follower);

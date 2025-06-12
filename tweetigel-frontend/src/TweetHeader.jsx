@@ -9,16 +9,19 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
     const password = useRef(undefined)
     const searchTerm = useRef(undefined)
 
-    function logOut(){
-        fetch(api+"/user/logout",{
-            method:"POST",
-            credentials: 'include'
-        })
-            .then(response => {
-                if(!response.ok) alert("Unable to log out: " + response.statusText);
-            }).then(() => {
-                setAuth({name:null, password:null, loggedIn: false})
-                setView("loggedOut")
+    function register(){
+        event.preventDefault();
+        const registerAuth = {username: name.current.value, password: password.current.value}
+        fetch(api+"/register",
+            {method:"POST",
+                headers:contentTypeJson(),
+                body: JSON.stringify(registerAuth)
+            }).then(response => {
+            if(!response.ok) {
+                alert("Register Failed.");
+            }else{
+                setRegistering(false)
+            }
         })
     }
 
@@ -40,19 +43,16 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
         })
     }
 
-    function register(){
-        event.preventDefault();
-        const registerAuth = {username: name.current.value, password: password.current.value}
-        fetch(api+"/register",
-            {method:"POST",
-                 headers:contentTypeJson(),
-                 body: JSON.stringify(registerAuth)
-        }).then(response => {
-                if(!response.ok) {
-                    alert("Register Failed.");
-                }else{
-                    setRegistering(false)
-                }
+    function logOut(){
+        fetch(api+"/user/logout",{
+            method:"POST",
+            credentials: 'include'
+        })
+            .then(response => {
+                if(!response.ok) alert("Unable to log out: " + response.statusText);
+            }).then(() => {
+                setAuth({name:null, password:null, loggedIn: false})
+                setView("loggedOut")
         })
     }
 

@@ -6,7 +6,7 @@ import UserProfile from "./UserProfile.jsx";
 import TweetFeedWithPagination from "./TweetFeedWithPagination..jsx";
 
 function TweetIgelFrontend(){
-    const [auth, setAuth] = useState({username:null, password: null, loggedIn: false});
+    const [auth, setAuth] = useState({username:null, loggedIn: false});
     const [username, setUsername] = useState(undefined);
     const [view, setView] = useState("loggedOut");
     const [result, setResult] = useState([])
@@ -41,7 +41,7 @@ function TweetIgelFrontend(){
                         </div>
                         : view === "search" ?
                             <div>
-                                <SearchResultView result={result} setResult={setResult} setView={setView} auth={auth} setViewingUsername={setViewingUsername}/>
+                                <SearchResultView result={result} setResult={setResult} setView={setView} setViewingUsername={setViewingUsername}/>
                             </div>
                             : view === "profile" ?
                                 <div>

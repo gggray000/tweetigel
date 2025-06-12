@@ -26,6 +26,9 @@ public class ClientErrors {
         return log(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials."));
     }
 
+    public static ResponseStatusException duplicatedLoginRequest(){
+        return log(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User already logged in, please log out first."));
+    }
     public static ResponseStatusException invalidLogOutRequest() {
         return log(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unable to Log out."));
     }

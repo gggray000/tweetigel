@@ -20,9 +20,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class AuthService {
 
     public static final String SESSION_USER_NAME = "tweetigel-session-user-name";
-    private BCryptPasswordEncoder passwordEncoder;
-    private UserRepository userRepository;
-    private Logger logger;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final Logger logger;
 
     @Autowired
     public AuthService (BCryptPasswordEncoder passwordEncoder, UserRepository userRepository){
@@ -36,33 +36,35 @@ public class AuthService {
     }
 
     public User logIn(HttpServletRequest request) {
-        try {
-            String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-            String decoded = new String(
-                    Base64.getDecoder().decode(
-                        authHeader.substring(authHeader.indexOf(" ") + 1)
-                    ), UTF_8
-            ) ;
-            String[] parts = decoded.split(":");
-            String userName = parts[0];
-            String password = parts[1];
-            User user = userRepository.findByUsername(userName).orElseThrow();
-            if (!passwordEncoder.matches(password, user.getHashedPassword())) {
-                throw new Exception();
-            }
-            logger.info("User logged in: {}", userName);
-            request.getSession().setAttribute(SESSION_USER_NAME, userName);
-            logger.info("Login Session Info: {}", request.getSession().getAttribute(SESSION_USER_NAME));
-            return user;
-        } catch (Exception e) {
-            request.getSession().setAttribute(SESSION_USER_NAME, null);
+        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if(authHeader == null){
             throw ClientErrors.invalidCredentials();
         }
+        if(request.getSession().getAttribute(SESSION_USER_NAME) != null){
+            throw ClientErrors.duplicatedLoginRequest();
+        }
+        String decoded = new String(
+                Base64.getDecoder().decode(
+                        authHeader.substring(authHeader.indexOf(" ") + 1)
+                ), UTF_8
+        ) ;
+        String[] parts = decoded.split(":");
+        String username = parts[0];
+        String password = parts[1];
+        User user = userRepository.findByUsername(username).orElseThrow(ClientErrors::userNotFound);
+        if (!passwordEncoder.matches(password, user.getHashedPassword())) {
+            throw ClientErrors.invalidCredentials();
+        }
+
+        logger.info("User logged in: {}", username);
+        request.getSession().setAttribute(SESSION_USER_NAME, username);
+        logger.info("Login Session Info: {}", request.getSession().getAttribute(SESSION_USER_NAME));
+        return user;
     }
 
     public void logOut(HttpServletRequest request){
-        logger.info("Logout Session Info: {}", request.getSession().getAttribute(SESSION_USER_NAME));
         if(request.getSession().getAttribute(SESSION_USER_NAME) != null){
+            logger.info("Logout Session Info: {}", request.getSession().getAttribute(SESSION_USER_NAME).toString());
             request.getSession().setAttribute(SESSION_USER_NAME, null);
         }else{
             throw ClientErrors.invalidLogOutRequest();
@@ -70,6 +72,9 @@ public class AuthService {
     }
 
     public User getAuthenticatedUser(HttpServletRequest request){
+        if (request.getSession().getAttribute(SESSION_USER_NAME) == null){
+            throw ClientErrors.userNotFound();
+        }
         Object sessionUsername = request.getSession().getAttribute(SESSION_USER_NAME);
         Optional<User> userOp = userRepository.findByUsername(sessionUsername.toString());
         if (userOp.isPresent()){

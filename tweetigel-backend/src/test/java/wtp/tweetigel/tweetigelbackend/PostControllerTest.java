@@ -68,6 +68,10 @@ public class PostControllerTest extends PostControllerTestBase {
         postController.likePost(mockRequestWithSession("testUser"), starPost.getId());
         assertThrows(
                 ResponseStatusException.class, () ->
+                        postController.likePost(mockRequestWithSession("testUser"), starPost.getId()+1)
+        );
+        assertThrows(
+                ResponseStatusException.class, () ->
                         postController.likePost(mockRequestWithSession("testUser"), starPost.getId())
         );
         assertThrows(

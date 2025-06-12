@@ -1,9 +1,11 @@
 package wtp.tweetigel.tweetigelbackend;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,6 +16,7 @@ import wtp.tweetigel.tweetigelbackend.services.UserService;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static wtp.tweetigel.tweetigelbackend.services.AuthService.SESSION_USER_NAME;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -45,27 +48,22 @@ public class UserControllerTest extends UserControllerTestBase{
 
     @Test
     public void userLogin(){
-        UserInfoConfirmDto response = controller.login(testUserLogin());
+        UserInfoConfirmDto response = controller.login(testUserRequestWithAuth());
         assertEquals("testUser", response.username());
 
-        assertThrows(
-                ResponseStatusException.class, () -> controller.login(testUserWrongPassword())
-        );
+        MockHttpServletRequest duplicatedLoginRequest = mockRequestWithAuthHeader("testUser", "test123");
+        duplicatedLoginRequest.getSession(true).setAttribute(SESSION_USER_NAME, "testUser");
+        assertThrows(ResponseStatusException.class, () -> controller.login(duplicatedLoginRequest));
 
-        assertThrows(
-                ResponseStatusException.class, () -> controller.login(testUserWrongUsername())
-        );
+        assertThrows(ResponseStatusException.class, () -> controller.login(testUserWrongPassword()));
+        assertThrows(ResponseStatusException.class, () -> controller.login(testUserWrongUsername()));
     }
 
     @Test
     public void userLogOut(){
-        controller.login(testUserLogin());
-        assertDoesNotThrow(
-                () -> controller.logOut(mockRequestWithSession("testUser"))
-        );
-        assertThrows(
-                ResponseStatusException.class, () -> controller.login(testInvalidLogout())
-        );
+        controller.login(testUserRequestWithAuth());
+        assertThrows(ResponseStatusException.class, () -> controller.logOut(testInvalidLogout()));
+        assertDoesNotThrow(() -> controller.logOut(testLogOut()));
     }
 
     @Test

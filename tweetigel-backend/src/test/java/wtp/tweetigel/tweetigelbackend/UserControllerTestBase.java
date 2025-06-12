@@ -43,7 +43,7 @@ public abstract class UserControllerTestBase {
     }
 
     protected MockHttpServletRequest mockRequestWithSession(String username){
-        MockHttpServletRequest  request = new MockHttpServletRequest();
+        MockHttpServletRequest request = new MockHttpServletRequest();
         request.getSession(true).setAttribute(SESSION_USER_NAME, username);
         return request;
     }
@@ -52,21 +52,8 @@ public abstract class UserControllerTestBase {
         return mockRequest("testUser", "test123");
     }
 
-    protected HttpServletRequest testUserLogin(){
+    protected HttpServletRequest testUserRequestWithAuth(){
         return mockRequestWithAuthHeader("testUser", "test123");
-    }
-
-    protected HttpServletRequest testInvalidLogout(){
-        return mockRequestWithSession("");
-    }
-
-
-    protected HttpServletRequest testUser2(){
-        return mockRequest("testUser", "test123");
-    }
-
-    protected HttpServletRequest testUserBlank(){
-        return mockRequest(" ", "");
     }
 
     protected HttpServletRequest testUserWrongUsername(){
@@ -77,8 +64,8 @@ public abstract class UserControllerTestBase {
         return mockRequestWithAuthHeader("testUser", "test456");
     }
 
-    protected HttpServletRequest superStar() { return mockRequest("superStar", "test123"); }
+    protected HttpServletRequest testInvalidLogout(){return mockRequestWithSession(null);}
 
-    protected HttpServletRequest superStar2() { return mockRequest("superStar2", "test123"); }
+    protected HttpServletRequest testLogOut(){return mockRequestWithSession("testUser");}
 
 }
