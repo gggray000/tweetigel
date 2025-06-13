@@ -111,8 +111,9 @@ public class UserController {
             value="/getProfile/{username}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public UserProfileDto getUserProfile(@PathVariable("username") String username){
-        return userService.getUserProfile(username);
+    public UserProfileDto getUserProfile(HttpServletRequest request,
+                                         @PathVariable("username") String username){
+        return userService.getUserProfile(request, username);
     }
 
     @ResponseStatus(HttpStatus.ACCEPTED)

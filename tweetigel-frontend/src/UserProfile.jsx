@@ -2,6 +2,7 @@ import {useContext, useEffect, useRef, useState} from "react";
 import {API} from "./Context.js";
 import {contentTypeJson} from "./RequestHeaders.js";
 import TweetFeedWithPagination from "./TweetFeedWithPagination..jsx";
+import FollowButton from "./FollowButton.jsx";
 
 function UserProfile({ username, viewingUsername, setViewingUsername, setView}){
     const api = useContext(API)
@@ -11,6 +12,8 @@ function UserProfile({ username, viewingUsername, setViewingUsername, setView}){
     const fullName = useRef(undefined)
     const email = useRef(undefined)
     const biography = useRef(undefined)
+    const [followed, setFollowed] = useState(undefined);
+    const [changed, setChanged] = useState(false);
 
     useEffect(() => {
         fetch(api + "/getProfile/" + viewingUsername.toString(),{
@@ -29,9 +32,15 @@ function UserProfile({ username, viewingUsername, setViewingUsername, setView}){
                 setEditable(true)
                 setEditing(false)
             }
-        })
-    },[api, viewingUsername])
+            setFollowed(parsedResponse.followed);
 
+        })
+    },[api, viewingUsername, changed])
+
+    function followButtonOp(){
+        followed? setFollowed(false) : setFollowed(true);
+        setChanged(!changed);
+    }
 
     function goBack(){
         setView("loggedIn")
@@ -75,8 +84,15 @@ function UserProfile({ username, viewingUsername, setViewingUsername, setView}){
         <br />
         <div>
             <h3>{viewingUsername}</h3>
+            {followed === null?
+                <></>
+                : followed === true?
+                    <FollowButton username={viewingUsername} followed={true} func={followButtonOp} />
+                    :
+                        <FollowButton username={viewingUsername} followed={false} func={followButtonOp}/>
+            }
         </div>
-
+        <br />
         <div>
             <label><small>Registered At: {profile?profile.registeredAt:NaN}</small></label>
             <label><small>Followed: {profile?profile.followedNum:NaN}</small></label>
@@ -154,6 +170,7 @@ function UserProfile({ username, viewingUsername, setViewingUsername, setView}){
                         </details>
                     </div>
         }
+        <hr />
         <h3>Posts</h3>
         <TweetFeedWithPagination viewingUsername={viewingUsername} />
     </>

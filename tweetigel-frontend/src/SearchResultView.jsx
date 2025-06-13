@@ -11,6 +11,14 @@ function SearchResultView({result, setResult, setView, setViewingUsername}){
         setView("loggedIn")
     }
 
+    function followButtonOp(username){
+        const index = result.findIndex(user => user.username === username);
+        const oldStatus = result[index].followed;
+        const newResult = result.slice();
+        newResult[index].followed = !oldStatus
+        setResult(newResult)
+    }
+
     if(result.length === 0){
         return <>
             <div className="grid">
@@ -41,8 +49,8 @@ function SearchResultView({result, setResult, setView, setViewingUsername}){
                         </th>
                         <td>{user.followed?"✅":"❌"}</td>
                         <td>{user.followed?
-                            <FollowButton username={user.username} followed={true} result={result} setResult={setResult} />
-                            : <FollowButton username={user.username} followed={false} result={result} setResult={setResult}/>}
+                            <FollowButton username={user.username} followed={true} func={followButtonOp} />
+                            : <FollowButton username={user.username} followed={false} func={followButtonOp}/>}
                         </td>
                     </tr>
                     ))

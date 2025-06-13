@@ -7,5 +7,6 @@ public record UserProfileDto(String id,
                              int followersNum,
                              String fullName,
                              String email,
-                             String biography) {
+                             String biography,
+                             Boolean followed) {
 }

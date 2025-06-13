@@ -44,7 +44,7 @@ public class UserService {
         );
     }
 
-    public UserProfileDto toUserProfileDto(User user){
+    public UserProfileDto toUserProfileDto(User user, Boolean followed){
         DateTimeFormatter formatter = DateTimeFormatter
                                         .ofPattern("yyyy.MM.dd")
                                         .withZone(ZoneId.systemDefault());
@@ -56,7 +56,8 @@ public class UserService {
                 user.getFollowers().size(),
                 user.getFullName(),
                 user.getEmail(),
-                user.getBiography()
+                user.getBiography(),
+                followed
         );
     }
 
@@ -156,10 +157,12 @@ public class UserService {
         return toUserInfoConfirmDto(user);
     }
 
-    public UserProfileDto getUserProfile(String username){
-        User user = userRepository.findByUsername(username)
+    public UserProfileDto getUserProfile(HttpServletRequest request, String username){
+        User user = authService.getAuthenticatedUser(request);
+        User toBeViewed = userRepository.findByUsername(username)
                 .orElseThrow(ClientErrors::userNotFound);
-        return toUserProfileDto(user);
+        Boolean followed = user.equals(toBeViewed) ? null : user.getFollowed().contains(toBeViewed);
+        return toUserProfileDto(toBeViewed, followed);
     }
 
     public UserProfileDto updateUserProfile(HttpServletRequest request,
@@ -169,7 +172,7 @@ public class UserService {
         user.setEmail(userProfileUpdateDto.email());
         user.setBiography(userProfileUpdateDto.biography());
         userRepository.save(user);
-        return toUserProfileDto(user);
+        return toUserProfileDto(user, null);
     }
 
 }

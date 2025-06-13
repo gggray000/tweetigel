@@ -2,7 +2,7 @@ import {API} from "./Context.js";
 import {useContext} from "react";
 import {contentTypeJson} from "./RequestHeaders.js";
 
-function FollowButton({username, followed, result, setResult}){
+function FollowButton({username, followed, func}){
     const api = useContext(API)
 
     function unfollow(){
@@ -19,12 +19,12 @@ function FollowButton({username, followed, result, setResult}){
                     throw new Error("Unable to unfollow");
                 }
             }).then(() =>{
-                const newStatus = false;
-                const index = result.findIndex(user => user.username === username);
-                const newResult = result.slice();
-                newResult[index].followed = newStatus
-                setResult(newResult)
-                })
+                if(func.length === 1){
+                    func(username)
+                } else {
+                    func()
+                }
+            })
     }
 
     function follow(){
@@ -41,21 +41,21 @@ function FollowButton({username, followed, result, setResult}){
                     throw new Error("Unable to follow");
                 }
         }).then(() =>{
-            const newStatus = true;
-            const index = result.findIndex(user => user.username === username);
-            const newResult = result.slice();
-            newResult[index].followed = newStatus
-            setResult(newResult)
+            if(func.length === 1){
+                func(username)
+            } else {
+                func()
+            }
         })
     }
 
     if(followed===true){
         return <>
-            <input type="button" value="Unfollow" onClick={unfollow}/>
+            <button className="pico-background-zinc-500" onClick={unfollow}>Unfollow</button>
         </>
     } else if(followed===false){
         return <>
-            <input type="button" value="Follow" onClick={follow}/>
+            <button className="pico-background-jade-350" value="Follow" onClick={follow}>Follow</button>
         </>
     } else {
         return <></>
