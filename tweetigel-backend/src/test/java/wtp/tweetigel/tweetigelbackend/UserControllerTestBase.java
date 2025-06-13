@@ -48,8 +48,8 @@ public abstract class UserControllerTestBase {
         return request;
     }
 
-    protected HttpServletRequest testUser(){
-        return mockRequest("testUser", "test123");
+    protected HttpServletRequest testUserWithSession(){
+        return mockRequestWithSession("testUser");
     }
 
     protected HttpServletRequest testUserRequestWithAuth(){
