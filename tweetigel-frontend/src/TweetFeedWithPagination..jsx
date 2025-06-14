@@ -117,22 +117,19 @@ function TweetFeedWithPagination({username, viewingUsername, setViewingUsername,
     }else{
         return <>
             <div role="group">
-                <button className="pico-background-azure-50" onClick={lastPage}>❮ Last Page</button>
-                <button className="pico-background-azure-50" onClick={nextPage}>Next Page ❯</button>
+                <button className="outline" onClick={lastPage}>❮ Last Page</button>
+                <button className="outline" onClick={nextPage}>Next Page ❯</button>
             </div>
             <ul>
                 {feed.map(
                     post => (
                         <article key={post.id}>
                             <header>
-                                <b>{post.author.username}</b>
-                                <a href="#" onClick={() => showProfile(post.author.username)} > <sub><i>    info</i></sub></a>
-                            </header>
-                            {post.content}
-                            <footer>
                                 <div className="grid">
-                                    {post.timestamp}
-                                    <CommentSection commentsCount={post.commentsCount} postId={post.id}></CommentSection>
+                                    <a href="#" onClick={() => showProfile(post.author.username)}>
+                                        <b>{post.author.username}</b>
+                                    </a>
+                                    <p><small><i>At {post.timestamp}</i></small></p>
                                     {post.likeable === true?
                                         <button className="pico-background-pink-450" onClick={() => like(post.id)}>
                                             Like ♥ {post.likesCount}
@@ -149,6 +146,16 @@ function TweetFeedWithPagination({username, viewingUsername, setViewingUsername,
                                         : <></>
                                     }
                                 </div>
+                            </header>
+                            {post.content}
+                            <footer>
+                                    <CommentSection commentsCount={post.commentsCount} postId={post.id}
+                                                    onCommentAdded={() => {
+                                                        setFeed(feed.map(p => p.id === post.id
+                                                            ? { ...p, commentsCount: p.commentsCount + 1 }
+                                                            : p))
+                                                    }}
+                                    ></CommentSection>
                             </footer>
                         </article>
                     ))

@@ -43,6 +43,17 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
         })
     }
 
+    function clearSession(){
+       if(confirm("This button is only for users who have been accidentally redirected to this page without logging out."))
+        fetch(api+"/user/logout",{
+            method:"POST",
+            credentials: 'include'
+        }).then(
+            response => {
+                if(!response.ok) alert("Troubleshooting failed, please reboot backend or clear cookies.");
+            })
+    }
+
     function logOut(){
         fetch(api+"/user/logout",{
             method:"POST",
@@ -106,6 +117,9 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
                         </fieldset>
                 </form>
             </ul>
+                <ul>
+                    <button className="pico-background-azure-450" onClick={clearSession}>Can't Log In?</button>
+                </ul>
         </nav>
     </>
     } else {

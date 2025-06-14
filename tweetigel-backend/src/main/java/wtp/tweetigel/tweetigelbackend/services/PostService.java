@@ -19,6 +19,7 @@ import wtp.tweetigel.tweetigelbackend.repositories.PostRepository;
 
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -149,6 +150,7 @@ public class PostService {
     public List<CommentDto> getCommentsOfPost(long postId){
         Post post = postRepository.findById(postId).orElseThrow(ClientErrors::postNotFound);
         return post.getComments().stream()
+                .sorted(Comparator.comparing(Comment::getTimestamp).reversed())
                 .map(this::toCommentDto)
                 .toList();
     }

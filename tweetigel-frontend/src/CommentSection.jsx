@@ -1,12 +1,13 @@
 import {useContext, useState} from "react";
+import Editor from "./Editor.jsx";
 import {API} from "./Context.js";
 
-function CommentSection({commentsCount, postId}){
+function CommentSection({commentsCount, postId, onCommentAdded}){
     const api = useContext(API)
     const [comments, setComments] = useState([]);
+    const [showEiditor, setShowEditor] = useState(false);
 
     function getComments(){
-        event.preventDefault();
         fetch(api+"/post/" + postId + "/comments", {
             method: 'GET'
         }).then(response => {
@@ -21,24 +22,41 @@ function CommentSection({commentsCount, postId}){
         })
     }
 
-    function addComment(){
+    function update(){
+        getComments()
+        if(onCommentAdded !== null) onCommentAdded()
+    }
 
-
+    function displayEditor(){
+        setShowEditor(!showEiditor)
     }
 
     return <>
-        <details>
-            <summary role="button" className="outline" onClick={getComments}>
-                {commentsCount} Comment{commentsCount>1?"s":""}
+        <details onToggle={getComments}>
+            <summary>
+                <u>{commentsCount} Comment{commentsCount>1?"s":""}</u>
             </summary>
-            <button className="pico-background-jade-350" onClick={addComment}>Leave Comment</button>
+            <hr />
+            <button className="outline" onClick={displayEditor}>Leave a Comment {showEiditor? "↓" :"→"}</button>
+            {showEiditor === true?
+                <div className="flex">
+                    <Editor endpoint={`/post/${postId}/addComment`} type={`Comment`} onSend={update}></Editor>
+                </div>
+                : <></>
+            }
+            <br /><br />
             {comments.length === 0?
                 <p>No comments yet.</p>
-                : comments.map(comment => (
-                    <p key={comment.id}>
-                        {comment.author}@{comment.timestamp}: {comment.content}
-                    </p>
-                ))
+                :
+                <ul>
+                    {comments.map(comment => (
+                        <p key={comment.id}>
+                            <kbd>@{comment.author}</kbd>&nbsp;&nbsp;&nbsp;<sub><i>{comment.timestamp}</i></sub>
+                            <br/><br/>
+                            {comment.content}
+                        </p>
+                    ))}
+                </ul>
             }
         </details>
     </>

@@ -1,6 +1,6 @@
 import TweetHeader from "./TweetHeader.jsx";
 import {useState} from "react";
-import TweetEditor from "./TweetEditor.jsx";
+import Editor from "./Editor.jsx";
 import SearchResultView from "./SearchResultView.jsx";
 import UserProfile from "./UserProfile.jsx";
 import TweetFeedWithPagination from "./TweetFeedWithPagination..jsx";
@@ -34,10 +34,9 @@ function TweetIgelFrontend(){
                                 <img src="/tweetigel_logo.png" width="100" alt="Logo"/>
                                 Hi, {username}!
                             </h3>
-                            <TweetEditor></TweetEditor>
+                            <Editor endpoint={`/post`} type={`Post`} onSend={null}/>
                             <h4>What's new</h4>
-                            <TweetFeedWithPagination username={username} viewingUsername={null} setViewingUsername={setViewingUsername}
-                                       setView={setView}></TweetFeedWithPagination>
+                            <TweetFeedWithPagination username={username} viewingUsername={null} setViewingUsername={setViewingUsername} setView={setView}/>
                         </div>
                         : view === "search" ?
                             <div>

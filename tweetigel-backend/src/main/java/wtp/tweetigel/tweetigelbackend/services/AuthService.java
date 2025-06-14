@@ -12,6 +12,7 @@ import wtp.tweetigel.tweetigelbackend.exceptions.ClientErrors;
 import wtp.tweetigel.tweetigelbackend.repositories.UserRepository;
 
 import java.util.Base64;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -40,9 +41,6 @@ public class AuthService {
         if(authHeader == null){
             throw ClientErrors.invalidCredentials();
         }
-        if(request.getSession().getAttribute(SESSION_USER_NAME) != null){
-            throw ClientErrors.duplicatedLoginRequest();
-        }
         String decoded = new String(
                 Base64.getDecoder().decode(
                         authHeader.substring(authHeader.indexOf(" ") + 1)
@@ -51,6 +49,11 @@ public class AuthService {
         String[] parts = decoded.split(":");
         String username = parts[0];
         String password = parts[1];
+
+        if (Objects.equals(request.getSession().getAttribute(SESSION_USER_NAME), username)) {
+            throw ClientErrors.duplicatedLoginRequest();
+        }
+
         User user = userRepository.findByUsername(username).orElseThrow(ClientErrors::userNotFound);
         if (!passwordEncoder.matches(password, user.getHashedPassword())) {
             throw ClientErrors.invalidCredentials();

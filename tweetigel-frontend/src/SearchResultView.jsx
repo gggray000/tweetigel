@@ -19,33 +19,28 @@ function SearchResultView({result, setResult, setView, setViewingUsername}){
         setResult(newResult)
     }
 
-    if(result.length === 0){
-        return <>
-            <div className="grid">
-                <h3>No user found.</h3>
-                <input type="button" value="Go Back to Feed" onClick={goBack}/>
-            </div>
-        </>
-    } else{
-        return <>
-            <div className="grid">
-                <h3>User Search Result</h3>
-                <input type="button" value="Go Back to Feed" onClick={goBack}/>
-            </div>
-            <table>
+    return <>
+        <div className="search-header">
+            {result.length === 0? <h3>No user found.</h3> :<h3>User Search Result</h3>}
+            <br/>
+            <button className="pico-background-azure-450" onClick={goBack}>Go Back to Feed</button>
+        </div>
+        <br/>
+        {result.length === 0? <></>
+            : <table className="search-table">
                 <thead>
-                    <tr>
-                        <th scope="col"><h5>Username</h5></th>
-                        <th scope="col"><h5>Followed</h5></th>
-                        <th scope="col"><h5>Action</h5></th>
-                    </tr>
+                <tr>
+                    <th scope="col"><h5>Username</h5></th>
+                    <th scope="col"><h5>Followed</h5></th>
+                    <th scope="col"><h5>Action</h5></th>
+                </tr>
                 </thead>
                 <tbody>
                 {result.map(user => (
                     <tr key={user.username}>
                         <th scope="row" >
                             <i>{user.username}</i>
-                            <a href="#" onClick={() => showProfile(user.username)} > <sub><i>Info</i></sub></a>
+                            <a href="#" onClick={() => showProfile(user.username)} > <sub><i>Profile</i></sub></a>
                         </th>
                         <td>{user.followed?"✅":"❌"}</td>
                         <td>{user.followed?
@@ -53,12 +48,12 @@ function SearchResultView({result, setResult, setView, setViewingUsername}){
                             : <FollowButton username={user.username} followed={false} func={followButtonOp}/>}
                         </td>
                     </tr>
-                    ))
+                ))
                 }
                 </tbody>
-            </table>
-        </>
-    }
+        </table>
+        }
+    </>
 }
 
 export default SearchResultView
