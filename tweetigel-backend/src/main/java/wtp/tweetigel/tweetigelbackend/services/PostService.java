@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wtp.tweetigel.tweetigelbackend.dtos.PostDto;
 import wtp.tweetigel.tweetigelbackend.entities.Post;
 import wtp.tweetigel.tweetigelbackend.entities.User;
@@ -18,6 +19,7 @@ import java.net.http.HttpRequest;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PostService {
@@ -53,6 +55,19 @@ public class PostService {
         User user = authService.getAuthenticatedUser(request);
         Post newPost = new Post(content, user);
         postRepository.save(newPost);
+    }
+
+    @Transactional // Without this, "TransactionRequiredException" will be thrown.
+    public void deletePost(HttpServletRequest request, Long postId){
+        User user = authService.getAuthenticatedUser(request);
+        for (Post post: user.getPosts()){
+            if(Objects.equals(post.getId(), postId)){
+                postRepository.deletePostById(postId);
+                user.getPosts().remove(post);
+                return;
+            }
+        }
+        throw ClientErrors.invalidDeleteRequest();
     }
 
     public void likePost(User user, long id) {

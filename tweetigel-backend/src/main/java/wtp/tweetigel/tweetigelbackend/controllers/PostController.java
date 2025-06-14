@@ -7,7 +7,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import wtp.tweetigel.tweetigelbackend.dtos.PostCreateDto;
 import wtp.tweetigel.tweetigelbackend.dtos.PostDto;
-import wtp.tweetigel.tweetigelbackend.dtos.UserSearchResultDto;
 import wtp.tweetigel.tweetigelbackend.entities.User;
 import wtp.tweetigel.tweetigelbackend.services.AuthService;
 import wtp.tweetigel.tweetigelbackend.services.PostService;
@@ -32,6 +31,13 @@ public class PostController {
     public void createPost(HttpServletRequest request,
                            @RequestBody PostCreateDto postCreateDto){
         this.postService.createPost(request, postCreateDto.content());
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping(value = "/post/{id}")
+    public void deletePost(HttpServletRequest request,
+                           @PathVariable("id") Long postId){
+        this.postService.deletePost(request, postId);
     }
 
     @ResponseStatus(HttpStatus.OK)

@@ -53,6 +53,11 @@ public class ClientErrors {
         return log(new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found."));
     }
 
+    public static ResponseStatusException invalidDeleteRequest() {
+        return log(new ResponseStatusException(HttpStatus.NOT_FOUND, "Deletion failed."));
+    }
+
+
     public static ResponseStatusException notLikable(){
         return log(new ResponseStatusException(HttpStatus.CONFLICT, "Unable to like the post."));
     }

@@ -20,8 +20,7 @@ import wtp.tweetigel.tweetigelbackend.repositories.UserRepository;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -46,8 +45,19 @@ public class PostControllerTest extends PostControllerTestBase {
     @Test
     public void createPost(){
         User testUser = userRepository.findByUsername("testUser").get();
-        postController.createPost(mockRequestWithSession("testUser"), new PostCreateDto("First test post."));
+        postController.createPost(testUserSession(), new PostCreateDto("First test post."));
         assertEquals(1, postRepository.findByAuthor(testUser).size());
+    }
+
+    @Test
+    public void deletePost(){
+        User testUser = userRepository.findByUsername("testUser").get();
+        postController.createPost(testUserSession(), new PostCreateDto("First test post."));
+        postController.createPost(testUserSession(), new PostCreateDto("Second test post."));
+        assertEquals(2, postRepository.findByAuthor(testUser).size());
+        assertDoesNotThrow(() -> postController.deletePost(testUserSession(), 2L));
+        assertThrows(ResponseStatusException.class, () ->
+                postController.deletePost(testUserSession(), 2L));
     }
 
     @Test
@@ -94,7 +104,6 @@ public class PostControllerTest extends PostControllerTestBase {
         assertEquals(1, postRepository.findByAuthor(superStar).getFirst().getLikedList().size());
 
         postController.unlikePost(mockRequestWithSession("testUser"), starPost.getId());
-        starPost = postRepository.findByAuthor(superStar).getFirst();
         assertEquals(0, postRepository.findByAuthor(superStar).getFirst().getLikedList().size());
         assertThrows(
                 ResponseStatusException.class, () ->

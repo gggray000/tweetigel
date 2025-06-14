@@ -20,5 +20,5 @@ public interface PostRepository extends CrudRepository<Post, String> {
     int countPostByAuthor(User author);
     Page<Post> findPostByAuthorIsIn(Collection<User> authors, Pageable pageable);
     int countPostByAuthorIsIn(Collection<User> authors);
-
+    void deletePostById(Long id);
 }

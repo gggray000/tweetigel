@@ -24,7 +24,7 @@ function TweetIgelFrontend(){
             <main>
                 {view === "loggedOut"
                     ? <div>
-                        <h3>Welcome to <p class="pico-color-pumpkin-700">TweetIgel</p></h3>
+                        <h3>Welcome to <p className="pico-color-pumpkin-700">TweetIgel</p></h3>
                         <h5><i>Please log in or register to continue.</i></h5>
                         <img src="/tweetigel_logo.png" width="100" alt="Logo"/>
                     </div>
@@ -36,7 +36,7 @@ function TweetIgelFrontend(){
                             </h3>
                             <TweetEditor></TweetEditor>
                             <h4>What's new</h4>
-                            <TweetFeedWithPagination viewingUsername={null} setViewingUsername={setViewingUsername}
+                            <TweetFeedWithPagination username={username} viewingUsername={null} setViewingUsername={setViewingUsername}
                                        setView={setView}></TweetFeedWithPagination>
                         </div>
                         : view === "search" ?

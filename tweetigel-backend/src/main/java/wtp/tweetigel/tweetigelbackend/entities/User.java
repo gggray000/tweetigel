@@ -76,12 +76,8 @@ public class User {
         this.registeredAt = registeredAt;
     }
 
-    public List<Post> getTweets() {
+    public List<Post> getPosts() {
         return posts;
-    }
-
-    public void setTweets(List<Post> tweets) {
-        this.posts = tweets;
     }
 
     public Set<User> getFollowed() {

@@ -13,3 +13,4 @@
 2. Managing one's own user profile.
 3. Displaying user profile of another user.
 4. Presenting the timelines of posts as a paginated view.
+5. Deleting one's own posts.

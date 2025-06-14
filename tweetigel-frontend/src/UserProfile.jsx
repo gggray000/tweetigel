@@ -172,7 +172,7 @@ function UserProfile({ username, viewingUsername, setViewingUsername, setView}){
         }
         <hr />
         <h3>Posts</h3>
-        <TweetFeedWithPagination viewingUsername={viewingUsername} />
+        <TweetFeedWithPagination username={username} viewingUsername={viewingUsername} />
     </>
 
 }

@@ -1,7 +1,7 @@
 import{API} from "./Context.js";
 import {useContext, useEffect, useState} from "react";
 
-function TweetFeedWithPagination({viewingUsername, setViewingUsername, setView}){
+function TweetFeedWithPagination({username, viewingUsername, setViewingUsername, setView}){
     const api = useContext(API)
     const [feed, setFeed] = useState([])
     const [changed, setChanged] = useState(false)
@@ -48,10 +48,10 @@ function TweetFeedWithPagination({viewingUsername, setViewingUsername, setView})
                 if (!response.ok) {
                     alert("Unable to like the post: " + response.statusText)
                 } else {
-                    const newFeed = feed.slice();
-                    const index = feed.findIndex(post => post.id === id)
-                    newFeed[index].likesCount = newFeed[index].likesCount + 1;
-                    setFeed(newFeed);
+                    //const newFeed = feed.slice();
+                    //const index = feed.findIndex(post => post.id === id)
+                    //newFeed[index].likesCount = newFeed[index].likesCount + 1;
+                    //setFeed(newFeed);
                     setChanged(!changed);
                 }
             }
@@ -67,14 +67,31 @@ function TweetFeedWithPagination({viewingUsername, setViewingUsername, setView})
                 if (!response.ok) {
                     alert("Unable to unlike the post: " + response.statusText)
                 } else {
-                    const newFeed = feed.slice();
-                    const index = feed.findIndex(post => post.id === id)
-                    newFeed[index].likesCount = newFeed[index].likesCount - 1;
-                    setFeed(newFeed);
+                    //const newFeed = feed.slice();
+                    //const index = feed.findIndex(post => post.id === id)
+                    //newFeed[index].likesCount = newFeed[index].likesCount - 1;
+                    //setFeed(newFeed);
                     setChanged(!changed);
                 }
             }
         )
+    }
+
+    function deletePost(id){
+        event.preventDefault();
+        if(confirm("Are you sure to delete this post?")){
+            fetch(api+"/post/" + id, {
+                method: 'Delete',
+                credentials: 'include'
+            }).then(response => {
+                    if (!response.ok) {
+                        alert("Unable to delete the post: " + response.statusText)
+                    } else {
+                        setChanged(!changed);
+                    }
+                }
+            )
+        }
     }
 
     function showProfile(username){
@@ -132,8 +149,12 @@ function TweetFeedWithPagination({viewingUsername, setViewingUsername, setView})
                                             </button>
                                             : <></>
                                     }
+                                    { username === viewingUsername?
+                                        <button className="pico-background-zinc-500" onClick={() => deletePost(post.id)}>
+                                            Delete ✖ </button>
+                                        : <></>
+                                    }
                                 </div>
-
                             </footer>
                         </article>
                     ))
