@@ -9,10 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 import wtp.tweetigel.tweetigelbackend.controllers.PostController;
 import wtp.tweetigel.tweetigelbackend.controllers.UserController;
-import wtp.tweetigel.tweetigelbackend.dtos.PostCreateDto;
-import wtp.tweetigel.tweetigelbackend.dtos.PostDto;
-import wtp.tweetigel.tweetigelbackend.dtos.UserCreateDto;
-import wtp.tweetigel.tweetigelbackend.dtos.UsernameDto;
+import wtp.tweetigel.tweetigelbackend.dtos.*;
 import wtp.tweetigel.tweetigelbackend.entities.Post;
 import wtp.tweetigel.tweetigelbackend.entities.User;
 import wtp.tweetigel.tweetigelbackend.repositories.PostRepository;
@@ -142,7 +139,15 @@ public class PostControllerTest extends PostControllerTestBase {
         assertEquals(postCount, postsList.size());
     }
 
+    @Test
+    public void addComment(){
+        UserCreateDto superStarDto = new UserCreateDto("superStar", "test123");
+        userController.registerNewUser(superStarDto);
+        postController.createPost(mockRequestWithSession("superStar"), new PostCreateDto("Random superStar's daily."));
+        Post starPost = postRepository.findByAuthor(userRepository.findByUsername("superStar").get()).getFirst();
 
-
-
+        postController.addComment(starPost.getId(), testUserSession(), new CommentCreateDto("A random comment"));
+        postController.addComment(starPost.getId(), testUserSession(), new CommentCreateDto("Another random comment"));
+        assertEquals(2, postController.getCommentsOfPost(starPost.getId()).size());
+    }
 }

@@ -1,5 +1,6 @@
 import{API} from "./Context.js";
 import {useContext, useEffect, useState} from "react";
+import CommentSection from "./CommentSection.jsx";
 
 function TweetFeedWithPagination({username, viewingUsername, setViewingUsername, setView}){
     const api = useContext(API)
@@ -131,6 +132,7 @@ function TweetFeedWithPagination({username, viewingUsername, setViewingUsername,
                             <footer>
                                 <div className="grid">
                                     {post.timestamp}
+                                    <CommentSection commentsCount={post.commentsCount} postId={post.id}></CommentSection>
                                     {post.likeable === true?
                                         <button className="pico-background-pink-450" onClick={() => like(post.id)}>
                                             Like ♥ {post.likesCount}

@@ -1,10 +1,13 @@
 package wtp.tweetigel.tweetigelbackend.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.hibernate.annotations.Comments;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import wtp.tweetigel.tweetigelbackend.dtos.CommentCreateDto;
+import wtp.tweetigel.tweetigelbackend.dtos.CommentDto;
 import wtp.tweetigel.tweetigelbackend.dtos.PostCreateDto;
 import wtp.tweetigel.tweetigelbackend.dtos.PostDto;
 import wtp.tweetigel.tweetigelbackend.entities.User;
@@ -82,9 +85,24 @@ public class PostController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/postsCount",
-            produces = MediaType.APPLICATION_JSON_VALUE)
+                produces = MediaType.APPLICATION_JSON_VALUE)
     public int getPostsCountForFeed(HttpServletRequest request){
         return postService.getPostsCountForFeed(request);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(value = "/post/{id}/addComment",
+                 consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void addComment(@PathVariable("id") Long postId,
+                            HttpServletRequest request,
+                           @RequestBody CommentCreateDto commentCreateDto){
+        postService.addComment(postId, request, commentCreateDto.content());
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/post/{id}/comments")
+    public List<CommentDto> getCommentsOfPost(@PathVariable("id") Long postId){
+        return postService.getCommentsOfPost(postId);
     }
 
 }

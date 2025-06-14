@@ -27,6 +27,8 @@ public class Post {
             inverseJoinColumns = @JoinColumn(name = "liked_list_id")
     )
     private Set<User> likedList;
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<Comment> comments;
 
     public Post(String content, User author) {
         this.timestamp = Instant.now();
@@ -71,7 +73,5 @@ public class Post {
         return likedList;
     }
 
-    public void setLikedList(Set<User> likedList) {
-        this.likedList = likedList;
-    }
+    public List<Comment> getComments() {return comments;}
 }

@@ -8,5 +8,6 @@ public record PostDto(long id,
                       UsernameDto author,
                       String timestamp,
                       int likesCount,
-                      Boolean likeable) {
+                      Boolean likeable,
+                      int commentsCount) {
 }
