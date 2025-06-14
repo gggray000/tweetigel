@@ -4,9 +4,8 @@
 <img src="tweetigel-frontend/public/tweetigel_logo.png" alt="Tweetigel Logo" width="100"/>
 
 ## TODOs
-1. Inspect code base in detail.
-2. Deployment.
-3. Increase test coverage.
+1. Create and test docker images with docker compose.
+2. Refactored bad code.
 
 ## Extra Feature
 1. Unliking posts.
@@ -14,3 +13,4 @@
 3. Displaying user profile of another user.
 4. Presenting the timelines of posts as a paginated view.
 5. Deleting one's own posts.
+6. Commenting on posts.
