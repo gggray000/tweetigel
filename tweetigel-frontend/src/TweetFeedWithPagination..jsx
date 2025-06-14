@@ -48,10 +48,6 @@ function TweetFeedWithPagination({username, viewingUsername, setViewingUsername,
                 if (!response.ok) {
                     alert("Unable to like the post: " + response.statusText)
                 } else {
-                    //const newFeed = feed.slice();
-                    //const index = feed.findIndex(post => post.id === id)
-                    //newFeed[index].likesCount = newFeed[index].likesCount + 1;
-                    //setFeed(newFeed);
                     setChanged(!changed);
                 }
             }
@@ -67,10 +63,6 @@ function TweetFeedWithPagination({username, viewingUsername, setViewingUsername,
                 if (!response.ok) {
                     alert("Unable to unlike the post: " + response.statusText)
                 } else {
-                    //const newFeed = feed.slice();
-                    //const index = feed.findIndex(post => post.id === id)
-                    //newFeed[index].likesCount = newFeed[index].likesCount - 1;
-                    //setFeed(newFeed);
                     setChanged(!changed);
                 }
             }
