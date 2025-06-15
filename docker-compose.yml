@@ -1,0 +1,43 @@
+services:
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: asdf1234
+    volumes:
+      - ./tweetigel-backend/mariadb/db-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: [ "CMD", "mariadb-admin" ,"ping", "-h", "localhost", "--password=asdf1234" ]
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "7070:8080"
+    depends_on:
+      - db
+
+  backend:
+    image: tweetigel/backend
+    restart: always
+    build:
+      context: ./tweetigel-backend
+    ports:
+      - 8080:8080
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    image: tweetigel/frontend
+    restart: always
+    build:
+      context: ./tweetigel-frontend
+      args:
+        - TWEETIGEL_API=${TWEETIGEL_API}
+    ports:
+      - 80:80
+    depends_on:
+      - backend

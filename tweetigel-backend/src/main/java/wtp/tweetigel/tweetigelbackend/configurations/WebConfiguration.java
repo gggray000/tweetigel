@@ -10,7 +10,7 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5173") // ChatGPT
+                .allowedOrigins("http://localhost:5173", "http://localhost", "http://localhost:80") // ChatGPT
                 .allowedMethods("*")
                 .allowCredentials(true); // ChatGPT
     }
