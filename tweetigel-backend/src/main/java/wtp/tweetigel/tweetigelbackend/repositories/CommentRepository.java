@@ -5,6 +5,6 @@ import wtp.tweetigel.tweetigelbackend.entities.Comment;
 import wtp.tweetigel.tweetigelbackend.entities.Post;
 import java.util.List;
 
-public interface CommentRepository extends CrudRepository<Comment, String> {
+public interface CommentRepository extends CrudRepository<Comment, Long> {
     List<Comment> getCommentByPostOrderByTimestampDesc(Post post);
 }

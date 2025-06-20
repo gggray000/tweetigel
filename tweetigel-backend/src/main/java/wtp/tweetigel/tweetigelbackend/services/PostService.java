@@ -11,10 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 import wtp.tweetigel.tweetigelbackend.dtos.CommentDto;
 import wtp.tweetigel.tweetigelbackend.dtos.PostDto;
 import wtp.tweetigel.tweetigelbackend.entities.Comment;
+import wtp.tweetigel.tweetigelbackend.entities.HashTag;
 import wtp.tweetigel.tweetigelbackend.entities.Post;
 import wtp.tweetigel.tweetigelbackend.entities.User;
 import wtp.tweetigel.tweetigelbackend.exceptions.ClientErrors;
 import wtp.tweetigel.tweetigelbackend.repositories.CommentRepository;
+import wtp.tweetigel.tweetigelbackend.repositories.HashTagRepository;
 import wtp.tweetigel.tweetigelbackend.repositories.PostRepository;
 
 import java.time.ZoneId;
@@ -22,12 +24,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class PostService {
 
     private PostRepository postRepository;
     private CommentRepository commentRepository;
+    private HashTagRepository hashTagRepository;
     private AuthService authService;
     private UserService userService;
     private DateTimeFormatter timeFormatter;
@@ -36,10 +41,12 @@ public class PostService {
     @Autowired
     public PostService(PostRepository postRepository,
                        CommentRepository commentRepository,
+                       HashTagRepository hashTagRepository,
                        AuthService authService,
                        UserService userService){
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
+        this.hashTagRepository = hashTagRepository;
         this.authService = authService;
         this.userService = userService;
         this.timeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm").withZone(ZoneId.systemDefault());
@@ -72,6 +79,34 @@ public class PostService {
         User user = authService.getAuthenticatedUser(request);
         Post newPost = new Post(content, user);
         postRepository.save(newPost);
+        extractAndSaveHashtags(newPost);
+    }
+
+    // Reference: https://regex101.com/codegen?language=java
+    public void extractAndSaveHashtags(Post post){
+
+        final String regex = "#(\\w+)";
+        final String string = post.getContent();
+
+        final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+        final Matcher matcher = pattern.matcher(string);
+
+        while (matcher.find()) {
+            System.out.println("Match: " + matcher.group(0));
+            savePostToHashTag(post, matcher.group(1));
+        }
+    }
+
+    public void savePostToHashTag(Post post, String hashtag){
+       if(hashTagRepository.existsHashTagByName(hashtag)){
+           HashTag hashTag = hashTagRepository.findHashTagByName(hashtag).orElseThrow();
+           hashTag.getPosts().add(post);
+           hashTagRepository.save(hashTag);
+       } else {
+           HashTag newHashTag =  new HashTag(hashtag);
+           newHashTag.getPosts().add(post);
+           hashTagRepository.save(newHashTag);
+       }
     }
 
     @Transactional // Without this, "TransactionRequiredException" will be thrown.
@@ -152,6 +187,15 @@ public class PostService {
         return post.getComments().stream()
                 .sorted(Comparator.comparing(Comment::getTimestamp).reversed())
                 .map(this::toCommentDto)
+                .toList();
+    }
+
+    public List<PostDto> getHashTagPosts(HttpServletRequest request, String hashtag){
+        User user = authService.getAuthenticatedUser(request);
+        HashTag hashTag = hashTagRepository.findHashTagByName(hashtag).orElseThrow(ClientErrors::hashtagNotFound);
+        return hashTag.getPosts().stream()
+                .sorted(Comparator.comparing(Post::getTimestamp).reversed())
+                .map(post -> this.toDto(post, user))
                 .toList();
     }
 }

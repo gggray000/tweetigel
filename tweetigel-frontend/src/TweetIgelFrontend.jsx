@@ -4,6 +4,7 @@ import Editor from "./Editor.jsx";
 import SearchResultView from "./SearchResultView.jsx";
 import UserProfile from "./UserProfile.jsx";
 import TweetFeedWithPagination from "./TweetFeedWithPagination..jsx";
+import HashTagFeed from "./HashTagFeed.jsx";
 
 function TweetIgelFrontend(){
     const [auth, setAuth] = useState({username:null, loggedIn: false});
@@ -11,6 +12,7 @@ function TweetIgelFrontend(){
     const [view, setView] = useState("loggedOut");
     const [result, setResult] = useState([])
     const [viewingUsername, setViewingUsername] = useState()
+    const [hashtag, setHashtag] = useState(undefined);
 
     return <>
             <header>
@@ -36,7 +38,7 @@ function TweetIgelFrontend(){
                             </h3>
                             <Editor endpoint={`/post`} type={`Post`} onSend={null}/>
                             <h4>What's new</h4>
-                            <TweetFeedWithPagination username={username} viewingUsername={null} setViewingUsername={setViewingUsername} setView={setView}/>
+                            <TweetFeedWithPagination username={username} viewingUsername={null} setViewingUsername={setViewingUsername} setView={setView} setHashtag={setHashtag}/>
                         </div>
                         : view === "search" ?
                             <div>
@@ -45,10 +47,13 @@ function TweetIgelFrontend(){
                             : view === "profile" ?
                                 <div>
                                     <UserProfile username={username} viewingUsername={viewingUsername}
-                                                 setViewingUsername={setViewingUsername} setView={setView}/>
+                                                 setViewingUsername={setViewingUsername} setView={setView} setHashtag={setHashtag}/>
                                 </div>
-                                : <>
-                                </>
+                                : view === "hashtag" ?
+                                    <HashTagFeed hashtag={hashtag} setHashtag={setHashtag} setView={setView} username={username}
+                                                 viewingUsername={null} setViewingUsername={setViewingUsername}/>
+                                    : <>
+                                    </>
                 }
             </main>
             <hr/>

@@ -69,4 +69,8 @@ public class ClientErrors {
         return log(new ResponseStatusException(HttpStatus.CONFLICT, "Unable to comment."));
     }
 
+    public static ResponseStatusException hashtagNotFound(){
+        return log(new ResponseStatusException(HttpStatus.NOT_FOUND, "HashTag not found"));
+    }
+
 }

@@ -2,6 +2,7 @@ package wtp.tweetigel.tweetigelbackend.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import org.apache.logging.log4j.util.Lazy;
 import org.hibernate.annotations.OnDelete;
 
 import java.time.Instant;
@@ -24,11 +25,13 @@ public class Post {
     @JoinTable(
             name = "post_liked_list",
             joinColumns = @JoinColumn(name = "post_id"),
-            inverseJoinColumns = @JoinColumn(name = "liked_list_id")
+            inverseJoinColumns = @JoinColumn(name = "liked_list_id") // actually User.id
     )
     private Set<User> likedList;
     @OneToMany(fetch = FetchType.EAGER)
     private List<Comment> comments;
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<HashTag> hashtags;
 
     public Post(String content, User author) {
         this.timestamp = Instant.now();

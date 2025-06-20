@@ -6,6 +6,7 @@
 ## TODOs
 1. Create and test docker images with docker compose.
 2. Refactored bad code.
+3. Comments and HashTag posts are not paginated.
 
 ## Extra Feature
 1. Unliking posts.

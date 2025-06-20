@@ -4,7 +4,7 @@ import {contentTypeJson} from "./RequestHeaders.js";
 import TweetFeedWithPagination from "./TweetFeedWithPagination..jsx";
 import FollowButton from "./FollowButton.jsx";
 
-function UserProfile({ username, viewingUsername, setViewingUsername, setView}){
+function UserProfile({ username, viewingUsername, setViewingUsername, setView, setHashtag}){
     const api = useContext(API)
     const [editable, setEditable] = useState(false)
     const [editing, setEditing] = useState(false)
@@ -172,7 +172,7 @@ function UserProfile({ username, viewingUsername, setViewingUsername, setView}){
         }
         <hr />
         <h3>Posts</h3>
-        <TweetFeedWithPagination username={username} viewingUsername={viewingUsername} />
+        <TweetFeedWithPagination username={username} viewingUsername={viewingUsername} setHashtag={setHashtag} />
     </>
 
 }

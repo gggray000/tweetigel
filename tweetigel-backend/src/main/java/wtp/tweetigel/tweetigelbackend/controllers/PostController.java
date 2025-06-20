@@ -105,4 +105,11 @@ public class PostController {
         return postService.getCommentsOfPost(postId);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/hashtag/{name}")
+    public List<PostDto> getHashTag(HttpServletRequest request,
+                                    @PathVariable("name") String hashtag){
+        return postService.getHashTagPosts(request, hashtag);
+    }
+
 }
