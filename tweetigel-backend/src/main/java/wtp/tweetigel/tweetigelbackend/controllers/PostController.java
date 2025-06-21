@@ -114,9 +114,8 @@ public class PostController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public List<PostDto> searchPosts(HttpServletRequest request,
-                                                 @RequestParam("term") String term,
-                                                 @RequestParam("page") int num){
-        return postService.searchPosts(request, term, num);
+                                                 @RequestParam("term") String term){
+        return postService.searchPosts(request, term);
     }
 
 }

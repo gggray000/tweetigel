@@ -4,7 +4,7 @@ import {contentTypeJson} from "./RequestHeaders.js";
 import TweetFeedWithPagination from "./TweetFeedWithPagination..jsx";
 import FollowButton from "./FollowButton.jsx";
 
-function UserProfile({ username, viewingUsername, setViewingUsername, setView, setHashtag}){
+function UserProfile({ username, viewingUsername, setViewingUsername, setView, setHashtag, changed, setChanged}){
     const api = useContext(API)
     const [editable, setEditable] = useState(false)
     const [editing, setEditing] = useState(false)
@@ -13,7 +13,6 @@ function UserProfile({ username, viewingUsername, setViewingUsername, setView, s
     const email = useRef(undefined)
     const biography = useRef(undefined)
     const [followed, setFollowed] = useState(undefined);
-    const [changed, setChanged] = useState(false);
 
     useEffect(() => {
         fetch(api + "/getProfile/" + viewingUsername.toString(),{
@@ -172,7 +171,7 @@ function UserProfile({ username, viewingUsername, setViewingUsername, setView, s
         }
         <hr />
         <h3>Posts</h3>
-        <TweetFeedWithPagination username={username} viewingUsername={viewingUsername} setHashtag={setHashtag} />
+        <TweetFeedWithPagination username={username} viewingUsername={viewingUsername} setHashtag={setHashtag} changed={changed} setChanged={setChanged}/>
     </>
 
 }

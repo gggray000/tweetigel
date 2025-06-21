@@ -14,6 +14,7 @@ function TweetIgelFrontend(){
     const [result, setResult] = useState([])
     const [viewingUsername, setViewingUsername] = useState()
     const [hashtag, setHashtag] = useState(undefined);
+    const [changed, setChanged] = useState(false)
 
     return <>
             <header>
@@ -36,9 +37,9 @@ function TweetIgelFrontend(){
                                 <img src="/tweetigel_logo.png" width="100" alt="Logo"/>
                                 Hi, {username}!
                             </h3>
-                            <Editor endpoint={`/post`} type={`Post`} onSend={null}/>
+                            <Editor endpoint={`/post`} type={`Post`} onSend={() => setChanged(!changed)}/>
                             <h4>What's new</h4>
-                            <TweetFeedWithPagination username={username} viewingUsername={null} setViewingUsername={setViewingUsername} setView={setView} setHashtag={setHashtag}/>
+                            <TweetFeedWithPagination username={username} viewingUsername={null} setViewingUsername={setViewingUsername} setView={setView} setHashtag={setHashtag} changed={changed} setChanged={setChanged}/>
                         </div>
                         : view === "search-user" || view ==="search-post"?
                             <div>
@@ -47,11 +48,11 @@ function TweetIgelFrontend(){
                             : view === "profile" ?
                                 <div>
                                     <UserProfile username={username} viewingUsername={viewingUsername}
-                                                 setViewingUsername={setViewingUsername} setView={setView} setHashtag={setHashtag}/>
+                                                 setViewingUsername={setViewingUsername} setView={setView} setHashtag={setHashtag} changed={changed} setChanged={setChanged}/>
                                 </div>
                                 : view === "hashtag" ?
                                     <HashTagFeed hashtag={hashtag} setHashtag={setHashtag} setView={setView} username={username}
-                                                 viewingUsername={null} setViewingUsername={setViewingUsername}/>
+                                                 setViewingUsername={setViewingUsername}/>
                                     : <>
                                     </>
                 }

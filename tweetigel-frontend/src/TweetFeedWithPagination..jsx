@@ -3,10 +3,9 @@ import {useContext, useEffect, useState} from "react";
 import Post from "./Post.jsx"
 import CommentSection from "./CommentSection.jsx";
 
-function TweetFeedWithPagination({username, viewingUsername, setViewingUsername, setView, setHashtag}){
+function TweetFeedWithPagination({username, viewingUsername, setViewingUsername, setView, setHashtag, changed, setChanged}){
     const api = useContext(API)
     const [feed, setFeed] = useState([])
-    const [changed, setChanged] = useState(false)
     const [pageNum, setPageNum] = useState(0)
     const [maxPageNum, setMaxPageNum] = useState(1)
 
@@ -71,8 +70,8 @@ function TweetFeedWithPagination({username, viewingUsername, setViewingUsername,
                 {feed.map(post => (
                         <Post key={post.id} post={post} setView={setView} username={username}
                               changed={changed} setChanged={setChanged}
-                              viewingUsername={viewingUsername} setViewingUsername={setViewingUsername}
-                              feed={feed} setFeed={setFeed} setHashtag={setHashtag}
+                              setViewingUsername={setViewingUsername} setHashtag={setHashtag}
+                              feed={feed} setFeed={setFeed}
                         />)
                 )}
             </ul>

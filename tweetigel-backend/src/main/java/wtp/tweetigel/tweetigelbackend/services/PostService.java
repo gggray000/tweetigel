@@ -22,6 +22,7 @@ import wtp.tweetigel.tweetigelbackend.repositories.PostRepository;
 
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -159,8 +160,10 @@ public class PostService {
 
     public List<PostDto> getPostsFeed(HttpServletRequest request, int num){
         User user = authService.getAuthenticatedUser(request);
+        List<User> usersInFeed = new ArrayList<>(user.getFollowed());
+        usersInFeed.add(user);
         Pageable pageWithTwentyPosts = PageRequest.of(num, 20, Sort.by("timestamp").descending());
-        Page<Post> postPage = postRepository.findPostByAuthorIsIn(user.getFollowed(), pageWithTwentyPosts);
+        Page<Post> postPage = postRepository.findPostByAuthorIsIn(usersInFeed, pageWithTwentyPosts);
         return postPage
                 .get()
                 .map(post -> this.toDto(post, user))
@@ -200,12 +203,11 @@ public class PostService {
                 .toList();
     }
 
-    public List<PostDto> searchPosts(HttpServletRequest request, String term, int num){
+    public List<PostDto> searchPosts(HttpServletRequest request, String term){
         User user = authService.getAuthenticatedUser(request);
-        Pageable pageWithTwentyPosts = PageRequest.of(num, 20, Sort.by("timestamp").descending());
-        Page<Post> postPage = postRepository.findPostsByContentContainingIgnoreCase(term, pageWithTwentyPosts);
-        return postPage
-                .get()
+        List<Post> posts = postRepository.findPostsByContentContainingIgnoreCase(term);
+        return posts.stream()
+                .sorted(Comparator.comparing(Post::getTimestamp).reversed())
                 .map(post -> this.toDto(post, user))
                 .toList();
     }

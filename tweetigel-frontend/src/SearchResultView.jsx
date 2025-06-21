@@ -78,8 +78,8 @@ function SearchResultView({result, setResult, view, setView, setViewingUsername,
                         {result.map(post => (
                             <Post key={post.id} post={post} setView={setView} username={username}
                                   changed={changed} setChanged={setChanged}
-                                  viewingUsername={null} setViewingUsername={setViewingUsername}
-                                  feed={feed} setFeed={setFeed} setHashtag={setHashtag}
+                                  setViewingUsername={setViewingUsername} setHashtag={setHashtag}
+                                  feed={feed} setFeed={setFeed}
                             />)
                         )}
                     </ul>

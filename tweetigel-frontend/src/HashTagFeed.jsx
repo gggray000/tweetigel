@@ -2,7 +2,7 @@ import {useContext, useEffect, useState} from "react";
 import {API} from "./Context.js";
 import Post from "./Post.jsx";
 
-function HashTagFeed({hashtag, setHashtag, setView, username, viewingUsername, setViewingUsername}){
+function HashTagFeed({hashtag, setHashtag, setView, username, setViewingUsername}){
     const api = useContext(API)
     const [feed, setFeed] = useState([])
     const [changed, setChanged] = useState(false)
@@ -45,8 +45,8 @@ function HashTagFeed({hashtag, setHashtag, setView, username, viewingUsername, s
                     {feed.map(post => (
                         <Post post={post} setView={setView} username={username}
                               changed={changed} setChanged={setChanged}
-                              viewingUsername={viewingUsername} setViewingUsername={setViewingUsername}
-                              feed={feed} setFeed={setFeed} setHashtag={setHashtag}>
+                              setViewingUsername={setViewingUsername} setHashtag={setHashtag}
+                              feed={feed} setFeed={setFeed} >
                         </Post>)
                     )}
                 </ul>

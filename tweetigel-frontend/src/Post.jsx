@@ -3,7 +3,7 @@ import HashTag from "./HashTag.jsx";
 import {useContext} from "react";
 import {API} from "./Context.js";
 
-function Post({post, username, setView, changed, setChanged, viewingUsername, setViewingUsername, feed, setFeed, setHashtag}){
+function Post({post, username, setView, changed, setChanged, setViewingUsername, feed, setFeed, setHashtag}){
     const api = useContext(API)
 
     function like(id){
@@ -94,13 +94,13 @@ function Post({post, username, setView, changed, setChanged, viewingUsername, se
                             Like ♥ {post.likesCount}
                         </button>
                         :post.likeable===false?
-                            <button className="pico-background-zinc-500" onClick={() => unlike(post.id)}>
+                            <button className="pico-background-zinc-50" onClick={() => unlike(post.id)}>
                                 Unlike ♡ {post.likesCount}
                             </button>
                             : <></>
                     }
-                    { username === viewingUsername?
-                        <button className="pico-background-zinc-500" onClick={() => deletePost(post.id)}>
+                    { username === post.author.username?
+                        <button className="pico-background-zinc-900" onClick={() => deletePost(post.id)}>
                             Delete ✖ </button>
                         : <></>
                     }

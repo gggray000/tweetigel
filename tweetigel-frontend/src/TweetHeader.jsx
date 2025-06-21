@@ -71,20 +71,17 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
     function search(){
         event.preventDefault();
         var endpoint;
-        var pagination;
         var viewToBeSet;
         const searchTerm = term.current.value
         if(searchMode.current.value === "User") {
             endpoint = "/user";
-            pagination=""
             viewToBeSet = "search-user";
         } else {
             endpoint = "/post";
-            pagination = "&page=0"
             viewToBeSet = "search-post";
         }
 
-        fetch(api+ endpoint + "/search?term=" + encodeURIComponent(searchTerm) + pagination,
+        fetch(api+ endpoint + "/search?term=" + encodeURIComponent(searchTerm),
             {method:"GET",
                 credentials: 'include'
             }).then(response => {
