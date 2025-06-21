@@ -13,6 +13,10 @@ nav > ul > div {
     display: flex;
 }
 
+.user-or-post {
+    max-width: fit-content;
+}
+
 .search-table > tbody > tr > td > button {
     width: 10rem;
 }
@@ -71,6 +75,11 @@ main > div > .editor-container > ul > button {
 
 
 @media (max-width: 768px) {
+
+    .landing-header {
+        display: grid;
+        row-gap: 0.5rem;
+    }
 
     nav > ul > div {
         display: block;

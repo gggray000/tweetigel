@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import wtp.tweetigel.tweetigelbackend.dtos.CommentCreateDto;
-import wtp.tweetigel.tweetigelbackend.dtos.CommentDto;
-import wtp.tweetigel.tweetigelbackend.dtos.PostCreateDto;
-import wtp.tweetigel.tweetigelbackend.dtos.PostDto;
+import wtp.tweetigel.tweetigelbackend.dtos.*;
 import wtp.tweetigel.tweetigelbackend.entities.User;
 import wtp.tweetigel.tweetigelbackend.services.AuthService;
 import wtp.tweetigel.tweetigelbackend.services.PostService;
@@ -110,6 +107,16 @@ public class PostController {
     public List<PostDto> getHashTag(HttpServletRequest request,
                                     @PathVariable("name") String hashtag){
         return postService.getHashTagPosts(request, hashtag);
+    }
+
+    @GetMapping(
+            value="/post/search",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public List<PostDto> searchPosts(HttpServletRequest request,
+                                                 @RequestParam("term") String term,
+                                                 @RequestParam("page") int num){
+        return postService.searchPosts(request, term, num);
     }
 
 }

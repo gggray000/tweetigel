@@ -2,12 +2,13 @@ import {useContext, useRef, useState} from "react";
 import {API} from "./Context.js";
 import {basic, contentTypeJson} from "./RequestHeaders.js";
 
-function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, setViewingUsername}){
+function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, setViewingUsername, setSearchTerm}){
     const api = useContext(API)
     const [registering, setRegistering] = useState(false)
     const name = useRef(undefined)
     const password = useRef(undefined)
-    const searchTerm = useRef(undefined)
+    const term = useRef(undefined)
+    const searchMode = useRef(undefined)
 
     function register(){
         event.preventDefault();
@@ -69,9 +70,23 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
 
     function search(){
         event.preventDefault();
-        fetch(api+"/user/search?term=" + searchTerm.current.value,
+        var endpoint;
+        var pagination;
+        var viewToBeSet;
+        const searchTerm = term.current.value
+        if(searchMode.current.value === "User") {
+            endpoint = "/user";
+            pagination=""
+            viewToBeSet = "search-user";
+        } else {
+            endpoint = "/post";
+            pagination = "&page=0"
+            viewToBeSet = "search-post";
+        }
+
+        fetch(api+ endpoint + "/search?term=" + encodeURIComponent(searchTerm) + pagination,
             {method:"GET",
-                 credentials: 'include'
+                credentials: 'include'
             }).then(response => {
             if(!response.ok) {
                 alert("Unable to Search");
@@ -81,9 +96,10 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
             }
         }).then(result => {
             setResult(result)
-            setView("search")
+            setView(viewToBeSet)
+            setSearchTerm(searchTerm)
         })
-        searchTerm.current.value = ""
+        term.current.value = ""
     }
 
     function showProfile(username){
@@ -93,7 +109,7 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
 
     if(!auth.loggedIn){
         return <>
-            <nav>
+            <nav className="landing-header">
                 <ul>
                     <li>
                     <label htmlFor="new-account"><small>
@@ -118,7 +134,7 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
                 </form>
             </ul>
                 <ul>
-                    <button className="pico-background-azure-450" onClick={clearSession}>Can't Log In?</button>
+                    <button className="pico-background-azure-50" onClick={clearSession}>Can't Log In?</button>
                 </ul>
         </nav>
     </>
@@ -136,7 +152,11 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
                             <li>
                                 <form onSubmit={search}>
                                     <fieldset role="group">
-                                        <input type="text" name="username" placeholder="Find someone..." ref={searchTerm}/>
+                                        <input type="text" name="username" placeholder="Looking for..." ref={term}/>
+                                        <select className="user-or-post" aria-label="User/Post" ref={searchMode} required>
+                                            <option>User</option>
+                                            <option>Post</option>
+                                        </select>
                                         <input className="pico-background-azure-450" type="submit" value="Search"/>
                                     </fieldset>
                                 </form>

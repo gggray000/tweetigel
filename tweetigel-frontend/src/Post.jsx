@@ -62,24 +62,21 @@ function Post({post, username, setView, changed, setChanged, viewingUsername, se
     function locateAndTransformHashtags(content) {
         const regex = /#(\w+)/gm;
         const parts = [];
-        let lastIndex = 0;
-        let match;
+        var startIndex = 0;
+        var match;
 
         while ((match = regex.exec(content)) !== null) {
-            if (match.index > lastIndex) {
-                parts.push(content.slice(lastIndex, match.index));
+            if (match.index > startIndex) {
+                parts.push(content.slice(startIndex, match.index));
             }
-
             parts.push(
                 <HashTag key={match.index} content={match[0]} setView={setView} setHashtag={setHashtag}/>
             );
-            lastIndex = regex.lastIndex;
+            startIndex = regex.lastIndex;
         }
-
-        if (lastIndex < content.length) {
-            parts.push(content.slice(lastIndex));
+        if (startIndex < content.length) {
+            parts.push(content.slice(startIndex));
         }
-
         return <>{parts}</>;
     }
 

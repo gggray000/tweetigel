@@ -10,6 +10,7 @@ function TweetIgelFrontend(){
     const [auth, setAuth] = useState({username:null, loggedIn: false});
     const [username, setUsername] = useState(undefined);
     const [view, setView] = useState("loggedOut");
+    const [searchTerm, setSearchTerm] = useState(undefined);
     const [result, setResult] = useState([])
     const [viewingUsername, setViewingUsername] = useState()
     const [hashtag, setHashtag] = useState(undefined);
@@ -18,9 +19,8 @@ function TweetIgelFrontend(){
             <header>
                 <TweetHeader auth={auth} setAuth={setAuth}
                              username={username} setUsername={setUsername}
-                             setView={setView}
-                             setResult={setResult}
-                             setViewingUsername={setViewingUsername}/>
+                             setView={setView} setSearchTerm={setSearchTerm}
+                             setResult={setResult} setViewingUsername={setViewingUsername}/>
             </header>
             <hr/>
             <main>
@@ -40,9 +40,9 @@ function TweetIgelFrontend(){
                             <h4>What's new</h4>
                             <TweetFeedWithPagination username={username} viewingUsername={null} setViewingUsername={setViewingUsername} setView={setView} setHashtag={setHashtag}/>
                         </div>
-                        : view === "search" ?
+                        : view === "search-user" || view ==="search-post"?
                             <div>
-                                <SearchResultView result={result} setResult={setResult} setView={setView} setViewingUsername={setViewingUsername}/>
+                                <SearchResultView result={result} setResult={setResult} view={view} setView={setView} setViewingUsername={setViewingUsername} username={username} setHashtag={setHashtag} searchTerm={searchTerm}/>
                             </div>
                             : view === "profile" ?
                                 <div>

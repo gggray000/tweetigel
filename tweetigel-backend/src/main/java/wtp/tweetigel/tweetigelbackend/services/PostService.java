@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wtp.tweetigel.tweetigelbackend.dtos.CommentDto;
 import wtp.tweetigel.tweetigelbackend.dtos.PostDto;
+import wtp.tweetigel.tweetigelbackend.dtos.UserSearchResultDto;
 import wtp.tweetigel.tweetigelbackend.entities.Comment;
 import wtp.tweetigel.tweetigelbackend.entities.HashTag;
 import wtp.tweetigel.tweetigelbackend.entities.Post;
@@ -195,6 +196,16 @@ public class PostService {
         HashTag hashTag = hashTagRepository.findHashTagByName(hashtag).orElseThrow(ClientErrors::hashtagNotFound);
         return hashTag.getPosts().stream()
                 .sorted(Comparator.comparing(Post::getTimestamp).reversed())
+                .map(post -> this.toDto(post, user))
+                .toList();
+    }
+
+    public List<PostDto> searchPosts(HttpServletRequest request, String term, int num){
+        User user = authService.getAuthenticatedUser(request);
+        Pageable pageWithTwentyPosts = PageRequest.of(num, 20, Sort.by("timestamp").descending());
+        Page<Post> postPage = postRepository.findPostsByContentContainingIgnoreCase(term, pageWithTwentyPosts);
+        return postPage
+                .get()
                 .map(post -> this.toDto(post, user))
                 .toList();
     }

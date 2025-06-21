@@ -10,8 +10,6 @@ function TweetFeedWithPagination({username, viewingUsername, setViewingUsername,
     const [pageNum, setPageNum] = useState(0)
     const [maxPageNum, setMaxPageNum] = useState(1)
 
-    // api+"/user/search?term=" + searchTerm.current.value,
-
     useEffect(() => {
         fetch(api + "/posts" + (viewingUsername===null ?"" :"/" + viewingUsername.toString()) + "?" + "page=" + pageNum.toString(), {
             method:"GET",
@@ -71,7 +69,7 @@ function TweetFeedWithPagination({username, viewingUsername, setViewingUsername,
             </div>
             <ul>
                 {feed.map(post => (
-                        <Post post={post} setView={setView} username={username}
+                        <Post key={post.id} post={post} setView={setView} username={username}
                               changed={changed} setChanged={setChanged}
                               viewingUsername={viewingUsername} setViewingUsername={setViewingUsername}
                               feed={feed} setFeed={setFeed} setHashtag={setHashtag}

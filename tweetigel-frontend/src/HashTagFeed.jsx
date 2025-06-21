@@ -22,7 +22,7 @@ function HashTagFeed({hashtag, setHashtag, setView, username, viewingUsername, s
         }).then(parsedResponse => {
             setFeed(parsedResponse)
         })
-    },[api])
+    },[api, changed])
 
     function goBack(){
         setView("loggedIn")
@@ -46,8 +46,8 @@ function HashTagFeed({hashtag, setHashtag, setView, username, viewingUsername, s
                         <Post post={post} setView={setView} username={username}
                               changed={changed} setChanged={setChanged}
                               viewingUsername={viewingUsername} setViewingUsername={setViewingUsername}
-                              feed={feed} setFeed={setFeed} setHashtag={setHashtag}
-                        />)
+                              feed={feed} setFeed={setFeed} setHashtag={setHashtag}>
+                        </Post>)
                     )}
                 </ul>
             </>
