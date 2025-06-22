@@ -12,8 +12,10 @@ import wtp.tweetigel.tweetigelbackend.controllers.UserController;
 import wtp.tweetigel.tweetigelbackend.dtos.*;
 import wtp.tweetigel.tweetigelbackend.entities.Post;
 import wtp.tweetigel.tweetigelbackend.entities.User;
+import wtp.tweetigel.tweetigelbackend.repositories.HashTagRepository;
 import wtp.tweetigel.tweetigelbackend.repositories.PostRepository;
 import wtp.tweetigel.tweetigelbackend.repositories.UserRepository;
+import wtp.tweetigel.tweetigelbackend.services.PostService;
 
 import java.util.List;
 
@@ -32,6 +34,10 @@ public class PostControllerTest extends PostControllerTestBase {
     private PostController postController;
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private HashTagRepository hashTagRepository;
+    @Autowired
+    private PostService postService;
 
     @BeforeEach
     public void beforeEach(){
@@ -150,4 +156,26 @@ public class PostControllerTest extends PostControllerTestBase {
         postController.addComment(starPost.getId(), testUserSession(), new CommentCreateDto("Another random comment"));
         assertEquals(2, postController.getCommentsOfPost(starPost.getId()).size());
     }
+
+    @Test
+    public void getHashTag(){
+
+        postController.createPost(testUserSession(), new PostCreateDto("First #test post."));
+        postController.createPost(testUserSession(), new PostCreateDto("Second #test #post."));
+
+        assertEquals(true, hashTagRepository.existsHashTagByName("test"));
+        assertEquals(2, postController.getHashTag(testUserSession(), "test").size());
+        assertEquals(1, postController.getHashTag(testUserSession(), "post").size());
+    }
+
+    @Test
+    public void searchPost(){
+        postController.createPost(testUserSession(), new PostCreateDto("First test post."));
+        postController.createPost(testUserSession(), new PostCreateDto("Second test post."));
+        assertEquals(1, postController.searchPosts(testUserSession(), "second").size());
+        postController.createPost(testUserSession(), new PostCreateDto("Third #test post."));
+        assertEquals(1, postController.searchPosts(testUserSession(), "#test").size());
+        assertEquals(3, postController.searchPosts(testUserSession(), "test").size());
+    }
+
 }
