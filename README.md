@@ -4,10 +4,7 @@
 <img src="tweetigel-frontend/public/tweetigel_logo.png" alt="Tweetigel Logo" width="100"/>
 
 ## TODOs
-1. Create and test docker images with docker compose.
-2. Refactored bad code.
-3. Comments and posts under hashtag/search views are not paginated.
-
+1. Fix more bugs and write more test.
 ## Extra Feature
 1. Unliking posts.
 2. Managing one's own user profile.
