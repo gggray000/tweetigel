@@ -2,7 +2,7 @@ import {useContext, useRef, useState} from "react";
 import {API} from "./Context.js";
 import {basic, contentTypeJson} from "./RequestHeaders.js";
 
-function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, setViewingUsername, setSearchTerm}){
+function TweetHeader({auth, setAuth, username, setUsername, setView, setViewingUsername, setSearchTerm}){
     const api = useContext(API)
     const [registering, setRegistering] = useState(false)
     const name = useRef(undefined)
@@ -70,18 +70,16 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
 
     function search(){
         event.preventDefault();
-        var endpoint;
         var viewToBeSet;
         const searchTerm = term.current.value
         if(searchMode.current.value === "User") {
-            endpoint = "/user";
+            //endpoint = "/user";
             viewToBeSet = "search-user";
         } else {
-            endpoint = "/post";
+            //endpoint = "/post";
             viewToBeSet = "search-post";
         }
-
-        fetch(api+ endpoint + "/search?term=" + encodeURIComponent(searchTerm),
+        /*fetch(api+ endpoint + "/search?term=" + encodeURIComponent(searchTerm),
             {method:"GET",
                 credentials: 'include'
             }).then(response => {
@@ -95,7 +93,9 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setResult, 
             setResult(result)
             setView(viewToBeSet)
             setSearchTerm(searchTerm)
-        })
+        })*/
+        setView(viewToBeSet)
+        setSearchTerm(searchTerm)
         term.current.value = ""
     }
 

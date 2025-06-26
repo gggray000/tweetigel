@@ -23,4 +23,8 @@ public interface PostRepository extends CrudRepository<Post, Long> {
     int countPostByAuthorIsIn(Collection<User> authors);
     void deletePostById(Long id);
     List<Post> findPostsByContentContainingIgnoreCase(String substring);
+    Page<Post> findPostsByHashtagsContains(HashTag hashTag, Pageable pageable);
+    int countPostByHashtagsContains(HashTag hashTag);
+    Page<Post> findPostsByContentContainingIgnoreCase(String substring, Pageable pageable);
+    int countPostByContentContains(String substring);
 }

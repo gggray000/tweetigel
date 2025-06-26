@@ -35,6 +35,10 @@ public class Comment {
         return id;
     }
 
+    public Post getPost() {
+        return post;
+    }
+
     public User getAuthor() {
         return author;
     }

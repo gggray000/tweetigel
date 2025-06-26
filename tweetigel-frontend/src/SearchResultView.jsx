@@ -1,15 +1,30 @@
 import FollowButton from "./FollowButton.jsx";
-import TweetFeedWithPagination from "./TweetFeedWithPagination..jsx";
+import TweetFeedWithPagination from "./TweetFeedWithPagination.jsx";
 import Post from "./Post.jsx";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
+import {API} from "./Context.js";
 
-function SearchResultView({result, setResult, view, setView, setViewingUsername, username, setHashtag, searchTerm}){
-    const [feed, setFeed] = useState([])
+function SearchResultView({view, setView, setViewingUsername, username, setHashtag, searchTerm}){
+    const api = useContext(API)
     const [changed, setChanged] = useState(false)
+    const [result, setResult] = useState([])
 
         useEffect(() => {
-            if(view === "search-user") return;
-            setFeed(result);
+            if(view === "search-user"){
+                fetch(api+ "/user/search?term=" + encodeURIComponent(searchTerm),
+                    {method:"GET",
+                        credentials: 'include'
+                    }).then(response => {
+                    if(!response.ok) {
+                        alert("Unable to Search");
+                        return []
+                    }else{
+                        return response.json()
+                    }
+                }).then(result => {
+                    setResult(result)
+                })
+            }
         },[changed])
 
         function showProfile(username){
@@ -68,22 +83,12 @@ function SearchResultView({result, setResult, view, setView, setViewingUsername,
         } else {
             return<>
                 <div className="search-header">
-                    {result.length === 0? <h3>No posts found.</h3> :<h3>Post Search Result For: "{searchTerm}"</h3>}
+                   <h3>Post Search Result For: "{searchTerm}"</h3>
                     <br/>
-                    <button className="pico-background-azure-450" onClick={goBack}>Go Back to Feed</button>
                 </div>
                 <br/>
-                {result.length === 0? <></>
-                    : <ul>
-                        {result.map(post => (
-                            <Post key={post.id} post={post} setView={setView} username={username}
-                                  changed={changed} setChanged={setChanged}
-                                  setViewingUsername={setViewingUsername} setHashtag={setHashtag}
-                                  feed={feed} setFeed={setFeed}
-                            />)
-                        )}
-                    </ul>
-                }
+                <TweetFeedWithPagination username={username} viewingUsername={null} setViewingUsername={setViewingUsername} setView={setView} hashtag={null} setHashtag={setHashtag} changed={changed} setChanged={setChanged} searchTerm={searchTerm} type={"search"}/>
+
             </>
         }
 

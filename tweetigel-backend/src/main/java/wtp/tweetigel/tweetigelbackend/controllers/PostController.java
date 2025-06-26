@@ -105,8 +105,16 @@ public class PostController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/hashtag/{name}")
     public List<PostDto> getHashTag(HttpServletRequest request,
-                                    @PathVariable("name") String hashtag){
-        return postService.getHashTagPosts(request, hashtag);
+                                    @PathVariable("name") String hashtagName,
+                                    @RequestParam("page") int num){
+        return postService.getHashTagPosts(request, hashtagName, num);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/hashtag/{name}/postsCount",
+                produces = MediaType.APPLICATION_JSON_VALUE)
+    public int getPostsCountForFeed(@PathVariable("name") String hashtagName){
+        return postService.getPostsCountForHashtags(hashtagName);
     }
 
     @GetMapping(
@@ -114,8 +122,16 @@ public class PostController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public List<PostDto> searchPosts(HttpServletRequest request,
-                                                 @RequestParam("term") String term){
-        return postService.searchPosts(request, term);
+                                     @RequestParam("term") String term,
+                                     @RequestParam("page") int num){
+        return postService.searchPosts(request, term, num);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/post/search/postCount",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public int getPostsCountForSearch(@RequestParam("term") String term){
+        return postService.getPostsCountForSearch(term);
     }
 
 }

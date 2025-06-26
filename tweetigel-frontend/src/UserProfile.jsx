@@ -1,7 +1,7 @@
 import {useContext, useEffect, useRef, useState} from "react";
 import {API} from "./Context.js";
 import {contentTypeJson} from "./RequestHeaders.js";
-import TweetFeedWithPagination from "./TweetFeedWithPagination..jsx";
+import TweetFeedWithPagination from "./TweetFeedWithPagination.jsx";
 import FollowButton from "./FollowButton.jsx";
 
 function UserProfile({ username, viewingUsername, setViewingUsername, setView, setHashtag, changed, setChanged}){
@@ -171,7 +171,7 @@ function UserProfile({ username, viewingUsername, setViewingUsername, setView, s
         }
         <hr />
         <h3>Posts</h3>
-        <TweetFeedWithPagination username={username} viewingUsername={viewingUsername} setHashtag={setHashtag} changed={changed} setChanged={setChanged}/>
+        <TweetFeedWithPagination username={username} viewingUsername={viewingUsername} setHashtag={setHashtag} changed={changed} setChanged={setChanged} type={"profile"}/>
     </>
 
 }

@@ -3,15 +3,13 @@ import {useState} from "react";
 import Editor from "./Editor.jsx";
 import SearchResultView from "./SearchResultView.jsx";
 import UserProfile from "./UserProfile.jsx";
-import TweetFeedWithPagination from "./TweetFeedWithPagination..jsx";
-import HashTagFeed from "./HashTagFeed.jsx";
+import TweetFeedWithPagination from "./TweetFeedWithPagination.jsx";
 
 function TweetIgelFrontend(){
     const [auth, setAuth] = useState({username:null, loggedIn: false});
     const [username, setUsername] = useState(undefined);
     const [view, setView] = useState("loggedOut");
     const [searchTerm, setSearchTerm] = useState(undefined);
-    const [result, setResult] = useState([])
     const [viewingUsername, setViewingUsername] = useState()
     const [hashtag, setHashtag] = useState(undefined);
     const [changed, setChanged] = useState(false)
@@ -21,7 +19,7 @@ function TweetIgelFrontend(){
                 <TweetHeader auth={auth} setAuth={setAuth}
                              username={username} setUsername={setUsername}
                              setView={setView} setSearchTerm={setSearchTerm}
-                             setResult={setResult} setViewingUsername={setViewingUsername}/>
+                             setViewingUsername={setViewingUsername}/>
             </header>
             <hr/>
             <main>
@@ -39,11 +37,11 @@ function TweetIgelFrontend(){
                             </h3>
                             <Editor endpoint={`/post`} type={`Post`} onSend={() => setChanged(!changed)}/>
                             <h4>What's new</h4>
-                            <TweetFeedWithPagination username={username} viewingUsername={null} setViewingUsername={setViewingUsername} setView={setView} setHashtag={setHashtag} changed={changed} setChanged={setChanged}/>
+                            <TweetFeedWithPagination username={username} viewingUsername={null} setViewingUsername={setViewingUsername} setView={setView} hashtag={null} setHashtag={setHashtag} changed={changed} setChanged={setChanged} type={"feed"}/>
                         </div>
                         : view === "search-user" || view ==="search-post"?
                             <div>
-                                <SearchResultView result={result} setResult={setResult} view={view} setView={setView} setViewingUsername={setViewingUsername} username={username} setHashtag={setHashtag} searchTerm={searchTerm}/>
+                                <SearchResultView view={view} setView={setView} setViewingUsername={setViewingUsername} username={username} setHashtag={setHashtag} searchTerm={searchTerm}/>
                             </div>
                             : view === "profile" ?
                                 <div>
@@ -51,8 +49,7 @@ function TweetIgelFrontend(){
                                                  setViewingUsername={setViewingUsername} setView={setView} setHashtag={setHashtag} changed={changed} setChanged={setChanged}/>
                                 </div>
                                 : view === "hashtag" ?
-                                    <HashTagFeed hashtag={hashtag} setHashtag={setHashtag} setView={setView} username={username}
-                                                 setViewingUsername={setViewingUsername}/>
+                                    <TweetFeedWithPagination username={username} viewingUsername={null} setViewingUsername={setViewingUsername} setView={setView} hashtag={hashtag} setHashtag={setHashtag} changed={changed} setChanged={setChanged} type={"hashtag"}/>
                                     : <>
                                     </>
                 }

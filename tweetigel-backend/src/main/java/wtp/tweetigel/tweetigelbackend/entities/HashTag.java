@@ -10,12 +10,7 @@ public class HashTag {
     @GeneratedValue
     private Long id;
     private String name;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "hashtag_post",
-            joinColumns = @JoinColumn(name = "post_id"),
-            inverseJoinColumns = @JoinColumn(name = "hashtag_id")
-    )
+    @ManyToMany(mappedBy = "hashtags", fetch = FetchType.EAGER)
     private List<Post> posts;
 
     public HashTag(String name) {

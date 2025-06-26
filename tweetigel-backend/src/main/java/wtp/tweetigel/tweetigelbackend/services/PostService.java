@@ -80,8 +80,8 @@ public class PostService {
     public void createPost(HttpServletRequest request, String content){
         User user = authService.getAuthenticatedUser(request);
         Post newPost = new Post(content, user);
-        postRepository.save(newPost);
         extractAndSaveHashtags(newPost);
+        postRepository.save(newPost);
     }
 
     // Reference: https://regex101.com/codegen?language=java
@@ -104,10 +104,12 @@ public class PostService {
            HashTag hashTag = hashTagRepository.findHashTagByName(hashtag).orElseThrow();
            hashTag.getPosts().add(post);
            hashTagRepository.save(hashTag);
+           post.getHashtags().add(hashTag);
        } else {
            HashTag newHashTag =  new HashTag(hashtag);
            newHashTag.getPosts().add(post);
            hashTagRepository.save(newHashTag);
+           post.getHashtags().add(newHashTag);
        }
     }
 
@@ -194,21 +196,42 @@ public class PostService {
                 .toList();
     }
 
-    public List<PostDto> getHashTagPosts(HttpServletRequest request, String hashtag){
+    public List<PostDto> getHashTagPosts(HttpServletRequest request, String hashtagName, int num){
         User user = authService.getAuthenticatedUser(request);
-        HashTag hashTag = hashTagRepository.findHashTagByName(hashtag).orElseThrow(ClientErrors::hashtagNotFound);
-        return hashTag.getPosts().stream()
-                .sorted(Comparator.comparing(Post::getTimestamp).reversed())
+        HashTag hashTag = hashTagRepository.findHashTagByName(hashtagName).orElseThrow(ClientErrors::hashtagNotFound);
+        Pageable pageWithTwentyPosts = PageRequest.of(num, 20, Sort.by("timestamp").descending());
+        Page<Post> postPage = postRepository.findPostsByHashtagsContains(hashTag, pageWithTwentyPosts);
+        return postPage
+                .get()
                 .map(post -> this.toDto(post, user))
                 .toList();
+        /*return hashTag.getPosts().stream()
+                .sorted(Comparator.comparing(Post::getTimestamp).reversed())
+                .map(post -> this.toDto(post, user))
+                .toList();*/
     }
 
-    public List<PostDto> searchPosts(HttpServletRequest request, String term){
+    public int getPostsCountForHashtags(String hashtagName){
+        HashTag hashTag = hashTagRepository.findHashTagByName(hashtagName).orElseThrow(ClientErrors::hashtagNotFound);
+        return postRepository.countPostByHashtagsContains(hashTag);
+    }
+
+    public List<PostDto> searchPosts(HttpServletRequest request, String term, int num){
         User user = authService.getAuthenticatedUser(request);
-        List<Post> posts = postRepository.findPostsByContentContainingIgnoreCase(term);
-        return posts.stream()
-                .sorted(Comparator.comparing(Post::getTimestamp).reversed())
+        //List<Post> posts = postRepository.findPostsByContentContainingIgnoreCase(term);
+        Pageable pageWithTwentyPosts = PageRequest.of(num, 20, Sort.by("timestamp").descending());
+        Page<Post> postPage = postRepository.findPostsByContentContainingIgnoreCase(term, pageWithTwentyPosts);
+        return postPage
+                .get()
                 .map(post -> this.toDto(post, user))
                 .toList();
+        /*return posts.stream()
+                .sorted(Comparator.comparing(Post::getTimestamp).reversed())
+                .map(post -> this.toDto(post, user))
+                .toList();*/
+    }
+
+    public int getPostsCountForSearch(String term){
+        return postRepository.countPostByContentContains(term);
     }
 }

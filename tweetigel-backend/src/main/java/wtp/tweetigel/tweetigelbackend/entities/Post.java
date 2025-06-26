@@ -28,16 +28,23 @@ public class Post {
             inverseJoinColumns = @JoinColumn(name = "liked_list_id") // actually User.id
     )
     private Set<User> likedList;
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Comment> comments;
     @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "hashtag_post",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "hashtag_id")
+    )
     private List<HashTag> hashtags;
 
     public Post(String content, User author) {
         this.timestamp = Instant.now();
         this.content = content;
         this.author = author;
+        this.comments = new ArrayList<>();
         this.likedList = new HashSet<>();
+        this.hashtags = new ArrayList<>();
     }
 
     public Post() {
@@ -77,4 +84,6 @@ public class Post {
     }
 
     public List<Comment> getComments() {return comments;}
+
+    public List<HashTag> getHashtags() {return hashtags;}
 }
