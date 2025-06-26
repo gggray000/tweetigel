@@ -164,18 +164,18 @@ public class PostControllerTest extends PostControllerTestBase {
         postController.createPost(testUserSession(), new PostCreateDto("Second #test #post."));
 
         assertEquals(true, hashTagRepository.existsHashTagByName("test"));
-        assertEquals(2, postController.getHashTag(testUserSession(), "test").size());
-        assertEquals(1, postController.getHashTag(testUserSession(), "post").size());
+        assertEquals(2, postController.getHashTag(testUserSession(), "test", 0).size());
+        assertEquals(1, postController.getHashTag(testUserSession(), "post", 0).size());
     }
 
     @Test
     public void searchPost(){
         postController.createPost(testUserSession(), new PostCreateDto("First test post."));
         postController.createPost(testUserSession(), new PostCreateDto("Second test post."));
-        assertEquals(1, postController.searchPosts(testUserSession(), "second").size());
+        assertEquals(1, postController.searchPosts(testUserSession(), "second", 0).size());
         postController.createPost(testUserSession(), new PostCreateDto("Third #test post."));
-        assertEquals(1, postController.searchPosts(testUserSession(), "#test").size());
-        assertEquals(3, postController.searchPosts(testUserSession(), "test").size());
+        assertEquals(1, postController.searchPosts(testUserSession(), "#test", 0).size());
+        assertEquals(3, postController.searchPosts(testUserSession(), "test", 0).size());
     }
 
 }
