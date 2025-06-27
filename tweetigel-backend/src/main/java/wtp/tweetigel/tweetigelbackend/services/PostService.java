@@ -32,12 +32,12 @@ import java.util.regex.Pattern;
 @Service
 public class PostService {
 
-    private PostRepository postRepository;
-    private CommentRepository commentRepository;
-    private HashTagRepository hashTagRepository;
-    private AuthService authService;
-    private UserService userService;
-    private DateTimeFormatter timeFormatter;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
+    private final HashTagRepository hashTagRepository;
+    private final AuthService authService;
+    private final UserService userService;
+    private final DateTimeFormatter timeFormatter;
 
 
     @Autowired
@@ -205,10 +205,6 @@ public class PostService {
                 .get()
                 .map(post -> this.toDto(post, user))
                 .toList();
-        /*return hashTag.getPosts().stream()
-                .sorted(Comparator.comparing(Post::getTimestamp).reversed())
-                .map(post -> this.toDto(post, user))
-                .toList();*/
     }
 
     public int getPostsCountForHashtags(String hashtagName){
@@ -225,10 +221,6 @@ public class PostService {
                 .get()
                 .map(post -> this.toDto(post, user))
                 .toList();
-        /*return posts.stream()
-                .sorted(Comparator.comparing(Post::getTimestamp).reversed())
-                .map(post -> this.toDto(post, user))
-                .toList();*/
     }
 
     public int getPostsCountForSearch(String term){

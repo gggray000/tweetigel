@@ -73,27 +73,10 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setViewingU
         var viewToBeSet;
         const searchTerm = term.current.value
         if(searchMode.current.value === "User") {
-            //endpoint = "/user";
             viewToBeSet = "search-user";
         } else {
-            //endpoint = "/post";
             viewToBeSet = "search-post";
         }
-        /*fetch(api+ endpoint + "/search?term=" + encodeURIComponent(searchTerm),
-            {method:"GET",
-                credentials: 'include'
-            }).then(response => {
-            if(!response.ok) {
-                alert("Unable to Search");
-                return []
-            }else{
-                return response.json()
-            }
-        }).then(result => {
-            setResult(result)
-            setView(viewToBeSet)
-            setSearchTerm(searchTerm)
-        })*/
         setView(viewToBeSet)
         setSearchTerm(searchTerm)
         term.current.value = ""
