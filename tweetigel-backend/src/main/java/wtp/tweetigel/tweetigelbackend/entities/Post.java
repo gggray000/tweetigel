@@ -25,10 +25,10 @@ public class Post {
     @JoinTable(
             name = "post_liked_list",
             joinColumns = @JoinColumn(name = "post_id"),
-            inverseJoinColumns = @JoinColumn(name = "liked_list_id") // actually User.id
+            inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<User> likedList;
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Comment> comments;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
