@@ -166,6 +166,10 @@ public class PostControllerTest extends PostControllerTestBase {
         assertEquals(true, hashTagRepository.existsHashTagByName("test"));
         assertEquals(2, postController.getHashTag(testUserSession(), "test", 0).size());
         assertEquals(1, postController.getHashTag(testUserSession(), "post", 0).size());
+        assertThrows(
+                ResponseStatusException.class, () ->
+                        postController.getHashTag(testUserSession(), "NonExistantHashtag", 0).size()
+        );
     }
 
     @Test

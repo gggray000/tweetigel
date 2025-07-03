@@ -179,14 +179,13 @@ public class PostService {
         return postRepository.countPostByAuthorIsIn(user.getFollowed());
     }
 
+    @Transactional
     public void addComment(long postId, HttpServletRequest request, String content){
         Post post = postRepository.findById(postId).orElseThrow(ClientErrors::postNotFound);
         User user = authService.getAuthenticatedUser(request);
         Comment comment = new Comment(post, user, content);
         commentRepository.save(comment);
-        if(!post.getComments().contains(comment)) {
-            post.getComments().add(comment);
-        } else throw ClientErrors.invalidCommentRequest();
+        post.getComments().add(comment);
         postRepository.save(post);
     }
 
@@ -219,7 +218,6 @@ public class PostService {
     @Transactional
     public List<PostDto> searchPosts(HttpServletRequest request, String term, int num){
         User user = authService.getAuthenticatedUser(request);
-        //List<Post> posts = postRepository.findPostsByContentContainingIgnoreCase(term);
         Pageable pageWithTwentyPosts = PageRequest.of(num, 20, Sort.by("timestamp").descending());
         Page<Post> postPage = postRepository.findPostsByContentContainingIgnoreCase(term, pageWithTwentyPosts);
         return postPage
