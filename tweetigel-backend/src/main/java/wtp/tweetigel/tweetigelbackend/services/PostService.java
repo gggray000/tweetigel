@@ -144,6 +144,7 @@ public class PostService {
         postRepository.save(post);
     }
 
+    @Transactional
     public List<PostDto> getPostsForProfile(HttpServletRequest request, String username, int num){
         User user = authService.getAuthenticatedUser(request);
         User toBeViewed = userService.getUser(username);
@@ -160,6 +161,7 @@ public class PostService {
         return postRepository.countPostByAuthor(toBeViewed);
     }
 
+    @Transactional
     public List<PostDto> getPostsFeed(HttpServletRequest request, int num){
         User user = authService.getAuthenticatedUser(request);
         List<User> usersInFeed = new ArrayList<>(user.getFollowed());
@@ -188,6 +190,7 @@ public class PostService {
         postRepository.save(post);
     }
 
+    @Transactional
     public List<CommentDto> getCommentsOfPost(long postId){
         Post post = postRepository.findById(postId).orElseThrow(ClientErrors::postNotFound);
         return post.getComments().stream()
@@ -196,6 +199,7 @@ public class PostService {
                 .toList();
     }
 
+    @Transactional
     public List<PostDto> getHashTagPosts(HttpServletRequest request, String hashtagName, int num){
         User user = authService.getAuthenticatedUser(request);
         HashTag hashTag = hashTagRepository.findHashTagByName(hashtagName).orElseThrow(ClientErrors::hashtagNotFound);
@@ -212,6 +216,7 @@ public class PostService {
         return postRepository.countPostByHashtagsContains(hashTag);
     }
 
+    @Transactional
     public List<PostDto> searchPosts(HttpServletRequest request, String term, int num){
         User user = authService.getAuthenticatedUser(request);
         //List<Post> posts = postRepository.findPostsByContentContainingIgnoreCase(term);

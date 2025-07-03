@@ -98,7 +98,7 @@ function TweetFeedWithPagination({username, viewingUsername, setViewingUsername,
                 </div>
                 <ul>
                     {feed.map(post => (
-                        <Post post={post} setView={setView} username={username}
+                        <Post key={post.id} post={post} setView={setView} username={username}
                               changed={changed} setChanged={setChanged}
                               setViewingUsername={setViewingUsername} setHashtag={setHashtag}
                               feed={feed} setFeed={setFeed} >

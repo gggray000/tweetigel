@@ -3,6 +3,7 @@ package wtp.tweetigel.tweetigelbackend.services;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wtp.tweetigel.tweetigelbackend.dtos.*;
 import wtp.tweetigel.tweetigelbackend.entities.User;
 import wtp.tweetigel.tweetigelbackend.exceptions.ClientErrors;
@@ -115,6 +116,7 @@ public class UserService {
         userRepository.save(toBeUnfollowed);
     }
 
+    @Transactional
     public List<UsernameDto> getFollowedList(UsernameDto usernameDto){
         User user = userRepository.findByUsername(usernameDto.username())
                 .orElseThrow(ClientErrors::userNotFound);
@@ -124,6 +126,7 @@ public class UserService {
                 .toList();
     }
 
+    @Transactional
     public List<UsernameDto> getFollowers(UsernameDto usernameDto){
         User user = userRepository.findByUsername(usernameDto.username())
                 .orElseThrow(ClientErrors::userNotFound);
@@ -133,6 +136,7 @@ public class UserService {
                 .toList();
     }
 
+    @Transactional
     public List<UserSearchResultDto> searchUsers(HttpServletRequest request, String term){
         User user = authService.getAuthenticatedUser(request);
         List<User> resultList= userRepository.findByUsernameContainingIgnoreCase(term);
