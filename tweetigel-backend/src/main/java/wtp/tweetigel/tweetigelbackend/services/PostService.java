@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wtp.tweetigel.tweetigelbackend.dtos.CommentDto;
 import wtp.tweetigel.tweetigelbackend.dtos.PostDto;
-import wtp.tweetigel.tweetigelbackend.dtos.UserSearchResultDto;
 import wtp.tweetigel.tweetigelbackend.entities.Comment;
 import wtp.tweetigel.tweetigelbackend.entities.HashTag;
 import wtp.tweetigel.tweetigelbackend.entities.Post;
@@ -161,6 +160,7 @@ public class PostService {
         return postRepository.countPostByAuthor(toBeViewed);
     }
 
+    // Reference: https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/domain/Pageable.html
     @Transactional
     public List<PostDto> getPostsFeed(HttpServletRequest request, int num){
         User user = authService.getAuthenticatedUser(request);

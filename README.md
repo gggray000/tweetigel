@@ -3,8 +3,9 @@
 
 <img src="tweetigel-frontend/public/tweetigel_logo.png" alt="Tweetigel Logo" width="100"/>
 
-## TODOs
-1. Fix more bugs and write more test.
+## Usage
+Test data can be populated to the application by running <code>testData.sql</code>.
+
 ## Extra Feature
 1. Unliking posts.
 2. Managing one's own user profile.

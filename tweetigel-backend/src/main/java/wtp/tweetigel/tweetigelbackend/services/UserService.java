@@ -83,6 +83,7 @@ public class UserService {
                 .orElseThrow(ClientErrors::userNotFound);
     }
 
+    @Transactional
     public void follow(HttpServletRequest request, UsernameDto usernameDto) {
         User follower = authService.getAuthenticatedUser(request);
         User toBeFollowed = userRepository.findByUsername(usernameDto.username())
@@ -102,6 +103,7 @@ public class UserService {
         userRepository.save(toBeFollowed);
     }
 
+    @Transactional
     public void unfollow(HttpServletRequest request, UsernameDto usernameDto) {
         User follower = authService.getAuthenticatedUser(request);
         User toBeUnfollowed = userRepository.findByUsername(usernameDto.username())
