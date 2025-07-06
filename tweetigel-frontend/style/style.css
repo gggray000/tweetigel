@@ -13,6 +13,13 @@ nav > ul > div {
     display: flex;
 }
 
+#clearSessionButton {
+    align-self: center;
+    font-size: small;
+    height: fit-content;
+    margin-left: 1rem;
+}
+
 .user-or-post {
     max-width: fit-content;
 }
@@ -83,6 +90,10 @@ main > div > .editor-container > ul > button {
 
     nav > ul > div {
         display: block;
+    }
+
+    #clearSessionButton {
+        margin-left: 0;
     }
 
     .editor-container {

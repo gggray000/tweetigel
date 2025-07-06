@@ -114,7 +114,7 @@ function TweetHeader({auth, setAuth, username, setUsername, setView, setViewingU
                 </form>
             </ul>
                 <ul>
-                    <button className="pico-background-azure-50" onClick={clearSession}>Can't Log In?</button>
+                    <button className="pico-background-azure-50" id="clearSessionButton" onClick={clearSession}>Can't Log In?</button>
                 </ul>
         </nav>
     </>
