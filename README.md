@@ -3,7 +3,7 @@
 <img src="tweetigel-frontend/public/tweetigel_logo.png" alt="Tweetigel Logo" width="100"/>
 
 ## Introduction
-This is a project for the course "Web Technology Project". <br>
+This is a microblog project for a university course "Web Technology Project". <br>
 Technology stack: <br>
 - Backend:Java Spring Boot
 - Frontend: React.js
