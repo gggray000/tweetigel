@@ -1,4 +1,4 @@
-# tweetigel
+# TweetIgel
 
 <img src="tweetigel-frontend/public/tweetigel_logo.png" alt="Tweetigel Logo" width="100"/>
 
